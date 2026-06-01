@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/ui/home/widget/home_page.dart';
+import 'package:flutter_nabee/ui/home/widget/ulet_popup2.dart';
 import 'package:flutter_nabee/ui/intro/login_page.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page1.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page2.dart';
