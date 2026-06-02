@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page.dart';
-import 'package:flutter_nabee/ui/home/widget/ulet_popup2.dart';
-import 'package:flutter_nabee/ui/intro/login_page.dart';
-import 'package:flutter_nabee/ui/intro/onboarding_page1.dart';
-import 'package:flutter_nabee/ui/intro/onboarding_page2.dart';
-import 'package:flutter_nabee/ui/intro/onboarding_page3.dart';
-import 'package:flutter_nabee/ui/intro/signin_page.dart';
-import 'package:flutter_nabee/ui/intro/splash_page.dart';
+import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
+import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,13 +15,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Nabee',
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      home: SplashScreen(),
+      home: HomePage(),
     );
   }
 }

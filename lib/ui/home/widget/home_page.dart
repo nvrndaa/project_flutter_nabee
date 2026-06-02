@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
+import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,33 +12,59 @@ class HomePage extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F7F7),
 
       bottomNavigationBar: Container(
-        height: 75,
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE28A24),
-          borderRadius: BorderRadius.circular(40),
+  height: 75,
+  margin: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: const Color(0xFFE28A24),
+    borderRadius: BorderRadius.circular(40),
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+
+  // HOME
+  GestureDetector(
+    onTap: () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const HomePage(),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _navItem(
-              "assets/icons/nav/logout.svg",
-              "Home",
-              true,
-            ),
-            _navItem(
-              "assets/icons/nav/camera.svg",
-              "Honey jar",
-              false,
-            ),
-            _navItem(
-              "assets/icons/nav/profile.svg",
-              "Profile",
-              false,
-            ),
-          ],
+      );
+    },
+    child: _navItem(
+      "assets/icons/nav/home.svg",
+      "Home",
+      true,
+    ),
+  ),
+
+  // HONEY JAR
+  _navItem(
+    "assets/icons/nav/honey_jar.svg",
+    "Honey jar",
+    false,
+  ),
+
+  // PROFILE
+  GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ProfilePage(),
         ),
-      ),
+      );
+    },
+    child: _navItem(
+      "assets/icons/nav/profile.svg",
+      "Profile",
+      false,
+    ),
+  ),
+],
+  ),
+),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -44,11 +72,9 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               // Header
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
                     "Hi, Salmaa!",
@@ -59,18 +85,28 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
 
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE28A24),
-                      shape: BoxShape.circle,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE28A24),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        "assets/icons/notif.svg",
+                        width: 20,
+                        height: 20,
+                      ),
                     ),
-                    child: SvgPicture.asset(
-                      "assets/icons/timer.svg",
-                      width: 20,
-                      height: 20,
-                    ),
-                  )
+                  ),
                 ],
               ),
 
@@ -81,7 +117,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _statCard(
-                      icon: "assets/icons/plus.svg",
+                      icon: "assets/icons/target_salved.svg",
                       title: "Target solved",
                       value: "0 Jars",
                     ),
@@ -111,10 +147,7 @@ class HomePage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Image.asset(
-                      "assets/images/ulet_happy.png",
-                      height: 220,
-                    ),
+                    Image.asset("assets/images/ulet_happy.png", height: 220),
 
                     const SizedBox(height: 10),
 
@@ -125,8 +158,7 @@ class HomePage extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFD34F),
-                        borderRadius:
-                            BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
                         "Name",
@@ -156,8 +188,7 @@ class HomePage extends StatelessWidget {
               _tipsCard(
                 image: "assets/images/bee.png",
                 tag: "Economic Growth",
-                title:
-                    "Money matters: Your guide to financial literacy",
+                title: "Money matters: Your guide to financial literacy",
                 source: "World Economic Forum",
                 date: "May 3, 2024",
               ),
@@ -169,8 +200,7 @@ class HomePage extends StatelessWidget {
                 tag: "Saving",
                 title:
                     "Smart Finance Management Tips to Avoid Wasteful Spending",
-                source:
-                    "PT Bank Tabungan Negara",
+                source: "PT Bank Tabungan Negara",
                 date: "Dec 23, 2024",
               ),
 
@@ -190,30 +220,18 @@ class HomePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color(0xFFE28A24),
-        ),
+        border: Border.all(color: const Color(0xFFE28A24)),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          SvgPicture.asset(
-            icon,
-            width: 22,
-            height: 22,
-          ),
+          SvgPicture.asset(icon, width: 22, height: 22),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 10,
-                  ),
-                ),
+                Text(title, style: const TextStyle(fontSize: 10)),
                 Text(
                   value,
                   style: const TextStyle(
@@ -223,7 +241,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -245,38 +263,25 @@ class HomePage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
-            child: Image.asset(
-              image,
-              width: 95,
-              height: 95,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(image, width: 95, height: 95, fit: BoxFit.cover),
           ),
 
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.amber,
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
-                      tag,
-                      style: const TextStyle(
-                        fontSize: 10,
-                      ),
-                    ),
+                    child: Text(tag, style: const TextStyle(fontSize: 10)),
                   ),
 
                   const SizedBox(height: 5),
@@ -284,59 +289,35 @@ class HomePage extends StatelessWidget {
                   Text(
                     title,
                     maxLines: 2,
-                    overflow:
-                        TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
-                  Text(
-                    source,
-                    style: const TextStyle(
-                      fontSize: 11,
-                    ),
-                  ),
+                  Text(source, style: const TextStyle(fontSize: 11)),
 
-                  Text(
-                    date,
-                    style: const TextStyle(
-                      fontSize: 11,
-                    ),
-                  ),
+                  Text(date, style: const TextStyle(fontSize: 11)),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _navItem(
-    String icon,
-    String label,
-    bool active,
-  ) {
+  Widget _navItem(String icon, String label, bool active) {
     return Column(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          icon,
-          width: 24,
-          height: 24,
-        ),
+        SvgPicture.asset(icon, width: 24, height: 24),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color: active
-                ? Colors.white
-                : Colors.black,
+            color: active ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
           ),
-        )
+        ),
       ],
     );
   }
