@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/ui/home/widget/edit_profile_page.dart';
+import 'package:flutter_nabee/ui/home/widget/home_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -19,20 +21,29 @@ class ProfilePage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _navItem(
-              "assets/icons/nav/home.svg",
-              "Home",
-              false,
+            // HOME
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HomePage()),
+                );
+              },
+              child: _navItem("assets/icons/nav/home.svg", "Home", true),
             ),
-            _navItem(
-              "assets/icons/nav/honey_jar.svg",
-              "Honey jar",
-              false,
-            ),
-            _navItem(
-              "assets/icons/nav/profile.svg",
-              "Profile",
-              true,
+
+            // HONEY JAR
+            _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", false),
+
+            // PROFILE
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                );
+              },
+              child: _navItem("assets/icons/nav/profile.svg", "Profile", false),
             ),
           ],
         ),
@@ -41,7 +52,6 @@ class ProfilePage extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-
             // Honeycomb Background
             Positioned(
               top: -10,
@@ -56,14 +66,10 @@ class ProfilePage extends StatelessWidget {
             ),
 
             SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
 
               child: Column(
                 children: [
-
                   const SizedBox(height: 10),
 
                   const Text(
@@ -111,10 +117,7 @@ class ProfilePage extends StatelessWidget {
 
                   const Text(
                     "idn2026@gmail.com",
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
 
                   const SizedBox(height: 16),
@@ -124,20 +127,23 @@ class ProfilePage extends StatelessWidget {
                     height: 40,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFFE28A24),
+                        backgroundColor: const Color(0xFFE28A24),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EditProfilePage(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         "Edit profile",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -163,38 +169,27 @@ class ProfilePage extends StatelessWidget {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFF4C8),
-                      borderRadius:
-                          BorderRadius.circular(18),
-                      border: Border.all(
-                        color: const Color(0xFFE28A24),
-                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: const Color(0xFFE28A24)),
                     ),
 
                     child: Row(
                       children: [
-
                         // GANTI GAMBAR ULAT DI SINI
                         Container(
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(
-                              0xFFC8F26D,
-                            ),
+                            color: const Color(0xFFC8F26D),
                             border: Border.all(
-                              color: const Color(
-                                0xFF66C13D,
-                              ),
+                              color: const Color(0xFF66C13D),
                               width: 2,
                             ),
                           ),
                           child: Padding(
-                            padding:
-                                const EdgeInsets.all(8),
-                            child: Image.asset(
-                              "assets/images/ulet_happy.png",
-                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset("assets/images/ulet_happy.png"),
                           ),
                         ),
 
@@ -202,52 +197,34 @@ class ProfilePage extends StatelessWidget {
 
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               const Text(
                                 "Caterpillar",
                                 style: TextStyle(
                                   fontSize: 24,
-                                  fontWeight:
-                                      FontWeight.bold,
-                                  color: Color(
-                                    0xFF4E1F0F,
-                                  ),
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4E1F0F),
                                 ),
                               ),
 
-                              const SizedBox(
-                                height: 14,
-                              ),
+                              const SizedBox(height: 14),
 
                               Row(
                                 children: [
-
                                   // LEVEL 1
                                   ClipPath(
-                                    clipper:
-                                        _HexagonClipper(),
+                                    clipper: _HexagonClipper(),
                                     child: Container(
                                       width: 32,
                                       height: 32,
-                                      color:
-                                          const Color(
-                                        0xFF5DBA43,
-                                      ),
-                                      child:
-                                          const Center(
+                                      color: const Color(0xFF5DBA43),
+                                      child: const Center(
                                         child: Text(
                                           "1",
-                                          style:
-                                              TextStyle(
-                                            color: Colors
-                                                .white,
-                                            fontWeight:
-                                                FontWeight
-                                                    .bold,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
@@ -255,38 +232,25 @@ class ProfilePage extends StatelessWidget {
                                   ),
 
                                   Expanded(
-                                    child:
-                                        Container(
+                                    child: Container(
                                       height: 12,
-                                      color:
-                                          const Color(
-                                        0xFFE5C56F,
-                                      ),
+                                      color: const Color(0xFFE5C56F),
                                     ),
                                   ),
 
                                   // LEVEL 2
                                   ClipPath(
-                                    clipper:
-                                        _HexagonClipper(),
+                                    clipper: _HexagonClipper(),
                                     child: Container(
                                       width: 32,
                                       height: 32,
-                                      color:
-                                          const Color(
-                                        0xFFE4BE2D,
-                                      ),
-                                      child:
-                                          const Center(
+                                      color: const Color(0xFFE4BE2D),
+                                      child: const Center(
                                         child: Text(
                                           "2",
-                                          style:
-                                              TextStyle(
-                                            color: Colors
-                                                .white,
-                                            fontWeight:
-                                                FontWeight
-                                                    .bold,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
@@ -332,10 +296,7 @@ class ProfilePage extends StatelessWidget {
 
   static Widget _settingTile(String title) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F1DF),
         borderRadius: BorderRadius.circular(12),
@@ -350,26 +311,16 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _navItem(
-    String icon,
-    String label,
-    bool active,
-  ) {
+  Widget _navItem(String icon, String label, bool active) {
     return Column(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          icon,
-          width: 24,
-          height: 24,
-        ),
+        SvgPicture.asset(icon, width: 24, height: 24),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color:
-                active ? Colors.white : Colors.black,
+            color: active ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -378,8 +329,7 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class _HexagonClipper
-    extends CustomClipper<Path> {
+class _HexagonClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final w = size.width;
@@ -396,8 +346,7 @@ class _HexagonClipper
   }
 
   @override
-  bool shouldReclip(
-      CustomClipper<Path> oldClipper) {
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
     return false;
   }
 }

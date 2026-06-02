@@ -12,201 +12,203 @@ class HomePage extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F7F7),
 
       bottomNavigationBar: Container(
-  height: 75,
-  margin: const EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: const Color(0xFFE28A24),
-    borderRadius: BorderRadius.circular(40),
-  ),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-
-  // HOME
-  GestureDetector(
-    onTap: () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const HomePage(),
+        height: 75,
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE28A24),
+          borderRadius: BorderRadius.circular(40),
         ),
-      );
-    },
-    child: _navItem(
-      "assets/icons/nav/home.svg",
-      "Home",
-      true,
-    ),
-  ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // HOME
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HomePage()),
+                );
+              },
+              child: _navItem("assets/icons/nav/home.svg", "Home", true),
+            ),
 
-  // HONEY JAR
-  _navItem(
-    "assets/icons/nav/honey_jar.svg",
-    "Honey jar",
-    false,
-  ),
+            // HONEY JAR
+            _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", false),
 
-  // PROFILE
-  GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const ProfilePage(),
+            // PROFILE
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                );
+              },
+              child: _navItem("assets/icons/nav/profile.svg", "Profile", false),
+            ),
+          ],
         ),
-      );
-    },
-    child: _navItem(
-      "assets/icons/nav/profile.svg",
-      "Profile",
-      false,
-    ),
-  ),
-],
-  ),
-),
+      ),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Opacity(
+                opacity: 0.3,
+                child: Image.asset(
+                  "assets/images/sarang_lebah_atas.png",
+                  width: 140,
+                ),
+              ),
+            ),
+
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Hi, Salmaa!",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF4E1F0F),
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationPage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE28A24),
+                            shape: BoxShape.circle,
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/icons/notif.svg",
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Statistik
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _statCard(
+                          icon: "assets/icons/target_salved.svg",
+                          title: "Target solved",
+                          value: "0 Jars",
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: _statCard(
+                          icon: "assets/icons/coin.svg",
+                          title: "Money saved",
+                          value: "0 Rupiah",
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Kartu Hewan
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF4E4B8),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/images/ulet_happy.png",
+                          height: 220,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFD34F),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            "Name",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4E1F0F),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
                   const Text(
-                    "Hi, Salmaa!",
+                    "Honey tips",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF4E1F0F),
                     ),
                   ),
 
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationPage(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE28A24),
-                        shape: BoxShape.circle,
-                      ),
-                      child: SvgPicture.asset(
-                        "assets/icons/notif.svg",
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
+                  const SizedBox(height: 12),
+
+                  _tipsCard(
+                    image: "assets/images/bee.png",
+                    tag: "Economic Growth",
+                    title: "Money matters: Your guide to financial literacy",
+                    source: "World Economic Forum",
+                    date: "May 3, 2024",
                   ),
+
+                  const SizedBox(height: 12),
+
+                  _tipsCard(
+                    image: "assets/images/bee.png",
+                    tag: "Saving",
+                    title:
+                        "Smart Finance Management Tips to Avoid Wasteful Spending",
+                    source: "PT Bank Tabungan Negara",
+                    date: "Dec 23, 2024",
+                  ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
-
-              const SizedBox(height: 20),
-
-              // Statistik
-              Row(
-                children: [
-                  Expanded(
-                    child: _statCard(
-                      icon: "assets/icons/target_salved.svg",
-                      title: "Target solved",
-                      value: "0 Jars",
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: _statCard(
-                      icon: "assets/icons/coin.svg",
-                      title: "Money saved",
-                      value: "0 Rupiah",
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // Kartu Hewan
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF4E4B8),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Column(
-                  children: [
-                    Image.asset("assets/images/ulet_happy.png", height: 220),
-
-                    const SizedBox(height: 10),
-
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFD34F),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        "Name",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4E1F0F),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              const Text(
-                "Honey tips",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4E1F0F),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              _tipsCard(
-                image: "assets/images/bee.png",
-                tag: "Economic Growth",
-                title: "Money matters: Your guide to financial literacy",
-                source: "World Economic Forum",
-                date: "May 3, 2024",
-              ),
-
-              const SizedBox(height: 12),
-
-              _tipsCard(
-                image: "assets/images/bee.png",
-                tag: "Saving",
-                title:
-                    "Smart Finance Management Tips to Avoid Wasteful Spending",
-                source: "PT Bank Tabungan Negara",
-                date: "Dec 23, 2024",
-              ),
-
-              const SizedBox(height: 20),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

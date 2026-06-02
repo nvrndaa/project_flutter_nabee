@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page.dart';
+import 'package:flutter_nabee/ui/home/widget/home_page_login.dart';
 import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
 import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
+import 'package:flutter_nabee/ui/home/widget/setting_notification.dart';
 
 
 void main() {
