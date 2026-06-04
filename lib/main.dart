@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page_login.dart';
+import 'package:flutter_nabee/ui/home/widget/honey_calender_page.dart';
+import 'package:flutter_nabee/ui/home/widget/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
 import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 import 'package:flutter_nabee/ui/home/widget/setting_notification.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: HoneyCalendarPage(),
     );
   }
 }

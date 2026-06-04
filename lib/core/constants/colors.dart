@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  /// primary = #3949AB
-  static const Color primary = Color(0xff3949AB);
+ /// softYellow = #FFFBE7
+  static const Color softYellow = Color(0xffFFFBE7);
 
-  /// grey = #50565C
-  static const Color grey = Color(0xff50565C);
+  /// orange = #E38823
+  static const Color orange = Color(0xffE38823);
 
-  /// black = #000000
-  static const Color black = Color(0xff000000);
+/// rakSatu = #DA8F43
+  static const Color rakSatu = Color(0xffDA8F43);
 
-  /// white = #FFFFFF
-  static const Color white = Color(0xffFFFFFF);
+/// rakDua = #BA601F
+  static const Color rakDua = Color(0xffBA601F);
 
-  /// stroke = #E7EAED
-  static const Color stroke = Color(0xffE7EAED);
-
-  /// navInActive = #A7AEC1
-  static const Color navInActive = Color(0xffA7AEC1);
-
-  /// buttonCancel = #F0F0F0
-  static const Color buttonCancel = Color(0xffF0F0F0);
+/// article= #FFE66F
+  static const Color article = Color(0xffFFE66F);
 }
