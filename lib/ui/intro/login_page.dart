@@ -28,13 +28,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // Sarang lebah bawah kanan
+          // Sarang lebah bawah
           Positioned(
-            bottom: -10,
-            right: -10,
+            bottom: -30,
+            right: -20,
             child: Image.asset(
               'assets/images/sarang_lebah_bawah.png',
-              width: 150,
+              width: MediaQuery.of(context).size.width * 0.5,
+              fit: BoxFit.contain,
             ),
           ),
 
@@ -197,10 +198,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.g_mobiledata, color: Colors.red, size: 30),
-                          SizedBox(width: 8),
-                          Text(
+                        children: [
+                          SvgPicture.asset(
+                            'icons/google.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
                             'Continue with Google',
                             style: TextStyle(
                               color: Colors.black,
@@ -237,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
 
-                    const SizedBox(height: 120),
+                    const SizedBox(height: 280),
                   ],
                 ),
               ),

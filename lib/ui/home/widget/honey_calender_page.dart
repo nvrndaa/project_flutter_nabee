@@ -9,6 +9,96 @@ class HoneyCalendarPage extends StatefulWidget {
 }
 
 class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
+  void showHoneySavingDialog(int day) {
+    final amountController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(35),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+
+                const Text(
+                  "Honey Saving",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff5C3818),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                const Text(
+                  "How much honey do you want\nto save today?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Color(0xff5C3818)),
+                ),
+
+                const SizedBox(height: 25),
+
+                TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Rp.",
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: const BorderSide(color: Color(0xffE38D1A)),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffE38D1A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      "Save Changes",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +127,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              
+
               // 1. SECTION TOPLES & PROGRES
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -47,7 +137,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                     child: SizedBox(
                       height: 240,
                       child: Image.asset(
-                        "assets/images/empty_jar.png", 
+                        "assets/images/empty_jar.png",
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -55,7 +145,10 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                             decoration: BoxDecoration(
                               color: const Color(0xffFCECD2),
                               borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: const Color(0xffE38D1A), width: 3),
+                              border: Border.all(
+                                color: const Color(0xffE38D1A),
+                                width: 3,
+                              ),
                             ),
                             child: const Center(child: Text("Toples Madu")),
                           );
@@ -154,15 +247,26 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                             const SizedBox(height: 2),
                             Text(
                               "May, 2026",
-                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
                             ),
                           ],
                         ),
                         Row(
                           children: [
-                            Icon(Icons.chevron_left, color: Colors.grey[600], size: 20),
+                            Icon(
+                              Icons.chevron_left,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
                             const SizedBox(width: 10),
-                            Icon(Icons.chevron_right, color: Colors.grey[600], size: 20),
+                            Icon(
+                              Icons.chevron_right,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
                           ],
                         ),
                       ],
@@ -173,18 +277,54 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                     Center(
                       child: Column(
                         children: [
-                          buildHoneycombRow([1, 2, 3, 4, 5, 6], isOffset: false),
-                          buildHoneycombRow([7, 8, 9, 10, 11, 12], isOffset: true),
-                          buildHoneycombRow([13, 14, 15, 16, 17, -1], isOffset: false), // -1 untuk tanda seru (!)
-                          buildHoneycombRow([18, 19, 20, 21, 22, 23, 24], isOffset: true),
-                          buildHoneycombRow([25, 26, 27, 28, 29, 30], isOffset: false),
+                          buildHoneycombRow([
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                          ], isOffset: false),
+                          buildHoneycombRow([
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                          ], isOffset: true),
+                          buildHoneycombRow([
+                            13,
+                            14,
+                            15,
+                            16,
+                            17,
+                            -1,
+                          ], isOffset: false), // -1 untuk tanda seru (!)
+                          buildHoneycombRow([
+                            18,
+                            19,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                          ], isOffset: true),
+                          buildHoneycombRow([
+                            25,
+                            26,
+                            27,
+                            28,
+                            29,
+                            30,
+                          ], isOffset: false),
                           buildHoneycombRow([31], isOffset: true),
                         ],
                       ),
                     ),
 
                     const SizedBox(height: 25),
-                    
+
                     // Keterangan Warna (Legend)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +371,8 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
               iconPath,
               width: 24,
               height: 24,
-              errorBuilder: (context, error, stackTrace) => Icon(fallbackIcon, color: const Color(0xffE8A44C)),
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(fallbackIcon, color: const Color(0xffE8A44C)),
             ),
           ),
           const SizedBox(width: 10),
@@ -241,12 +382,20 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: valueColor),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: valueColor,
+                  ),
                 ),
               ],
             ),
@@ -257,7 +406,22 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
   }
 
   Widget buildHoneycombRow(List<int> days, {required bool isOffset}) {
-    final List<int> savedDays = [1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 14, 15, 16, 17];
+    final List<int> savedDays = [
+      1,
+      2,
+      3,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+    ];
 
     return Transform.translate(
       offset: Offset(isOffset ? 21 : 0, -8),
@@ -277,12 +441,19 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
           }
 
           bool isSaved = savedDays.contains(day);
+          bool isMissed = day < 16 && !isSaved;
+          bool canTap = !isSaved && !isMissed;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1),
             child: HoneycombWidget(
               dayText: day.toString(),
-              bgColor: isSaved ? const Color(0xffFFAA2C) : const Color(0xffF5EEDB),
+              bgColor: isSaved
+                  ? const Color(0xffFFAA2C)
+                  : const Color(0xffF5EEDB),
               textColor: isSaved ? Colors.white : Colors.grey[600]!,
+              onTap: () {
+                showHoneySavingDialog(day);
+              },
             ),
           );
         }).toList(),
@@ -300,7 +471,11 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
         const SizedBox(width: 6),
         Text(
           text,
-          style: TextStyle(fontSize: 12, color: Colors.grey[700], fontWeight: FontWeight.w500),
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[700],
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -313,6 +488,7 @@ class HoneycombWidget extends StatelessWidget {
   final Color? textColor;
   final Color? borderColor;
   final bool hasAlert;
+  final VoidCallback? onTap;
 
   const HoneycombWidget({
     super.key,
@@ -321,46 +497,31 @@ class HoneycombWidget extends StatelessWidget {
     this.textColor,
     this.borderColor,
     this.hasAlert = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        CustomPaint(
-          size: const Size(38, 42),
-          painter: HexagonPainter(
-            color: bgColor,
-            borderColor: borderColor,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomPaint(
+            size: const Size(38, 42),
+            painter: HexagonPainter(color: bgColor, borderColor: borderColor),
           ),
-        ),
-        if (!hasAlert)
-          Text(
-            dayText,
-            style: TextStyle(
-              color: textColor ?? Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
-            ),
-          ),
-        if (hasAlert)
-          Positioned(
-            top: 2,
-            right: 2,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              child: const Text(
-                "!",
-                style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+          if (!hasAlert)
+            Text(
+              dayText,
+              style: TextStyle(
+                color: textColor ?? Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -380,12 +541,12 @@ class HexagonPainter extends CustomPainter {
     final path = Path();
     final double cx = size.width / 2;
 
-    path.moveTo(cx, 0); 
-    path.lineTo(size.width, size.height * 0.25); 
-    path.lineTo(size.width, size.height * 0.75); 
-    path.lineTo(cx, size.height); 
-    path.lineTo(0, size.height * 0.75); 
-    path.lineTo(0, size.height * 0.25); 
+    path.moveTo(cx, 0);
+    path.lineTo(size.width, size.height * 0.25);
+    path.lineTo(size.width, size.height * 0.75);
+    path.lineTo(cx, size.height);
+    path.lineTo(0, size.height * 0.75);
+    path.lineTo(0, size.height * 0.25);
     path.close();
 
     canvas.drawPath(path, paint);

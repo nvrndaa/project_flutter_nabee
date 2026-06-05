@@ -30,11 +30,12 @@ class _SignInPageState extends State<SignInPage> {
 
           // Sarang lebah bawah
           Positioned(
-            bottom: -20,
+            bottom: -30,
             right: -20,
             child: Image.asset(
               'assets/images/sarang_lebah_bawah.png',
-              width: 170,
+              width: MediaQuery.of(context).size.width * 0.5,
+              fit: BoxFit.contain,
             ),
           ),
 
@@ -209,10 +210,14 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.g_mobiledata, color: Colors.red, size: 32),
-                          SizedBox(width: 8),
-                          Text(
+                        children: [
+                          SvgPicture.asset(
+                            'icons/google.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
                             'Continue with Google',
                             style: TextStyle(
                               color: Colors.black,
@@ -244,7 +249,7 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
 
-                    const SizedBox(height: 80),
+                    const SizedBox(height: 130),
                   ],
                 ),
               ),

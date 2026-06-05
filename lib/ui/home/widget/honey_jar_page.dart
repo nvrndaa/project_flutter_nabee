@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/ui/home/widget/home_page.dart';
+import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 import 'package:flutter_nabee/ui/models/jar_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,6 +13,7 @@ class HoneyJarPage extends StatefulWidget {
 
 class _HoneyJarPageState extends State<HoneyJarPage> {
   final List<JarModel> jars = [];
+  int selectedIndex = 1; // Honey Jar aktif
 
   void showAddJarDialog() {
     final nameController = TextEditingController();
@@ -53,11 +56,14 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
 
                       const SizedBox(height: 12),
 
-                      buildField("Start", startController),
+                      buildDateField(
+                        controller: startController,
+                        hint: "Start",
+                      ),
 
                       const SizedBox(height: 12),
 
-                      buildField("End", endController),
+                      buildDateField(controller: endController, hint: "End"),
 
                       const SizedBox(height: 12),
 
@@ -147,14 +153,48 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
 
   Widget buildField(String hint, TextEditingController controller) {
     return TextField(controller: controller, decoration: inputDecoration(hint));
+    
   }
+
+  Widget buildDateField({
+  required TextEditingController controller,
+  required String hint,
+}) {
+  return TextField(
+    controller: controller,
+    readOnly: true,
+    decoration: inputDecoration(hint).copyWith(
+      suffixIcon: Padding(
+        padding: const EdgeInsets.all(12),
+        child: SvgPicture.asset(
+          "assets/icons/calender.svg", // icon SVG kamu
+          width: 20,
+          height: 20,
+        ),
+      ),
+    ),
+    onTap: () async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime(2035),
+      );
+
+      if (pickedDate != null) {
+        controller.text =
+            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      }
+    },
+  );
+}
 
   Widget shelf() {
     return Stack(
       children: [
         Container(
           height: 45,
-          width: 412,
+          width: double.infinity,
           decoration: BoxDecoration(
             color: const Color(0xffDA8F43),
             borderRadius: BorderRadius.circular(2),
@@ -166,7 +206,7 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
           right: 0,
           child: Container(
             height: 15,
-            width: 412,
+            width: double.infinity,
             decoration: BoxDecoration(
               color: const Color(0xffBA601F),
               borderRadius: BorderRadius.circular(2),
@@ -178,22 +218,22 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
   }
 
   Widget jarWidget(JarModel jar) {
-  return Column(
-    // Tambahkan baris ini agar isi toples dan teksnya rapat ke bawah menempel rak
-    mainAxisAlignment: MainAxisAlignment.end, 
-    children: [
-      SizedBox(height: 95, child: Image.asset("assets/images/empty_jar.png")),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-        color: const Color(0xffF7E6A6),
-        child: Text(
-          jar.name,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+    return Column(
+      // Tambahkan baris ini agar isi toples dan teksnya rapat ke bawah menempel rak
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(height: 95, child: Image.asset("assets/images/empty_jar.png")),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          color: const Color(0xffF7E6A6),
+          child: Text(
+            jar.name,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Widget addButton() {
     return GestureDetector(
@@ -217,13 +257,27 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
     );
   }
 
-  Widget _navItem({required String icon, required String label}) {
+  Widget _navItem(String icon, String label, bool isActive) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(icon, width: 24, height: 24),
+        SvgPicture.asset(
+          icon,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(
+            isActive ? Colors.white : const Color(0xff5C3818),
+            BlendMode.srcIn,
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(label),
+        Text(
+          label,
+          style: TextStyle(
+            color: isActive ? Colors.white : const Color(0xff5C3818),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
@@ -289,18 +343,21 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
 
                 shelf(),
 
-                const SizedBox(height: 155),
+                const SizedBox(height: 120),
 
                 shelf(),
 
-                const SizedBox(height: 155),
+                const SizedBox(height: 120),
 
                 shelf(),
 
                 const Spacer(),
 
                 Container(
-                  margin: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   height: 70,
                   decoration: BoxDecoration(
                     color: const Color(0xffC77710),
@@ -309,17 +366,55 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _navItem(
-                        icon: "assets/icons/nav/home.svg",
-                        label: "Home",
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = 0;
+                          });
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => const HomePage()),
+                          );
+                        },
+                        child: _navItem(
+                          "assets/icons/nav/home.svg",
+                          "Home",
+                          selectedIndex == 0,
+                        ),
                       ),
-                      _navItem(
-                        icon: "assets/icons/nav/honey_jar.svg",
-                        label: "Honey Jar",
+
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = 1;
+                          });
+                        },
+                        child: _navItem(
+                          "assets/icons/nav/honey_jar.svg",
+                          "Honey Jar",
+                          selectedIndex == 1,
+                        ),
                       ),
-                      _navItem(
-                        icon: "assets/icons/nav/profile.svg",
-                        label: "Profile",
+
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = 2;
+                          });
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ProfilePage(),
+                            ),
+                          );
+                        },
+                        child: _navItem(
+                          "assets/icons/nav/profile.svg",
+                          "Profile",
+                          selectedIndex == 2,
+                        ),
                       ),
                     ],
                   ),

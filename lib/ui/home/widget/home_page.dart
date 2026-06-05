@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/ui/home/widget/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
 import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+   static const String petName = "Salma";
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,15 @@ class HomePage extends StatelessWidget {
             ),
 
             // HONEY JAR
-            _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", false),
+           GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HoneyJarPage()),
+                );
+              },
+              child: _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", true),
+            ),
 
             // PROFILE
             GestureDetector(
@@ -74,7 +85,7 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Hi, Salmaa!",
+                      "Hi, $petName!",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -134,13 +145,15 @@ class HomePage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // Kartu Hewan
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF4E4B8),
                       borderRadius: BorderRadius.circular(24),
+                      image: const DecorationImage(
+                        image: AssetImage("images/background_ulet.png"),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     child: Column(
                       children: [
