@@ -53,7 +53,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_native_splash: ^2.4.0
   flutter_lints: ^6.0.0
 
   # Code Generator (STABLE COMBO)
@@ -63,10 +63,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
   assets:
     - assets/images/
     - assets/icons/
     - assets/icons/nav/
-    - assets/icons/payment/
-    - assets/icons/settings/
+
+flutter_native_splash:
+  color: "#FFFBE7"
+  image: "assets/images/logo_nabee.png"
+  
+  android_12:
+    color: "#FFFBE7"
+    image: "assets/images/logo_nabee.png"
