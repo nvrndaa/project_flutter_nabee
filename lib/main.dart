@@ -7,6 +7,7 @@ import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
 import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
 import 'package:flutter_nabee/ui/home/widget/setting_notification.dart';
 import 'package:flutter_nabee/ui/home/widget/ulet_popup2.dart';
+import 'package:flutter_nabee/ui/intro/login_page.dart';
 import 'package:flutter_nabee/ui/intro/splash_page.dart';
 
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScreen(),
     );
   }
 }

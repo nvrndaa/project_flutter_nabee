@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page3.dart';
 
-class onboarding_page2 extends StatelessWidget {
-  const onboarding_page2({super.key});
+class OnboardingPage2 extends StatelessWidget {
+  const OnboardingPage2({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           // Sarang lebah atas kiri
           Positioned(
-            top: -10,
+            top: 0,
             left: -10,
             child: Image.asset(
               'assets/images/sarang_lebah_atas.png',
               width: 180,
+              cacheWidth: 250,
             ),
           ),
 
           // Sarang lebah bawah kanan
           Positioned(
-            bottom: -20,
+            bottom: -5,
             right: -20,
             child: Image.asset(
               'assets/images/sarang_lebah_bawah.png',
-              width: 170,
+              width: 200,
+              cacheWidth: 250,
             ),
           ),
 
@@ -35,17 +38,18 @@ class onboarding_page2 extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 130),
+                  const SizedBox(height: 150),
 
                   // Gambar lebah
                   Center(
                     child: Image.asset(
                       'assets/images/calender.png',
-                      width: 200,
+                      width: 180,
+                      cacheWidth: 350,
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
 
                   const Text(
                     'Save and Fill!',
@@ -53,19 +57,19 @@ class onboarding_page2 extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF4E1F0F),
+                      color: AppColors.brownText,
                     ),
                   ),
 
                   const SizedBox(height: 8),
 
                   const Text(
-                    'Fill your Honey jar daily with fun \nreminders and easy saving \nhabits!',
+                    'Fill your Honey jar daily with fun \nreminders and easy saving \nhabits! ',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Color(0xFF4E1F0F)),
+                    style: TextStyle(fontSize: 16, color: AppColors.brownText),
                   ),
 
-                  const SizedBox(height: 45),
+                  const SizedBox(height: 38),
 
                   SizedBox(
                     width: double.infinity,
@@ -75,12 +79,12 @@ class onboarding_page2 extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const onboarding_page3(),
+                            builder: (_) => const OnboardingPage3(),
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE28A24),
+                        backgroundColor: AppColors.orange,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),

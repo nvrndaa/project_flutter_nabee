@@ -15,4 +15,7 @@ class AppColors {
 
 /// article= #FFE66F
   static const Color article = Color(0xffFFE66F);
+
+/// text #431c13
+  static const Color brownText = Color(0xff431c13);
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page1.dart';
 
 
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const onboarding_page1(),
+            builder: (context) => const OnboardingPage1(),
           ),
         );
       },
@@ -32,11 +33,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F3E4),
+      backgroundColor: AppColors.softYellow,
       body: Center(
         child: Image.asset(
           'assets/images/logo_nabee.png',
-          width: 220,
+          width: 200,
         ),
       ),
     );

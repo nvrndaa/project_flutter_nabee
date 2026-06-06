@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: const Color(0xFFF7F7F7),
       body: Stack(
         children: [
-          // Sarang lebah atas kiri
           Positioned(
             top: -10,
             left: -10,
