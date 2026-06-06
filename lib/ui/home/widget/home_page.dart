@@ -8,6 +8,7 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
    static const String petName = "Salma";
+    final int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {

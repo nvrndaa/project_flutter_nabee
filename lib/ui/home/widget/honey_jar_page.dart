@@ -153,41 +153,40 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
 
   Widget buildField(String hint, TextEditingController controller) {
     return TextField(controller: controller, decoration: inputDecoration(hint));
-    
   }
 
   Widget buildDateField({
-  required TextEditingController controller,
-  required String hint,
-}) {
-  return TextField(
-    controller: controller,
-    readOnly: true,
-    decoration: inputDecoration(hint).copyWith(
-      suffixIcon: Padding(
-        padding: const EdgeInsets.all(12),
-        child: SvgPicture.asset(
-          "assets/icons/calender.svg", // icon SVG kamu
-          width: 20,
-          height: 20,
+    required TextEditingController controller,
+    required String hint,
+  }) {
+    return TextField(
+      controller: controller,
+      readOnly: true,
+      decoration: inputDecoration(hint).copyWith(
+        suffixIcon: Padding(
+          padding: const EdgeInsets.all(12),
+          child: SvgPicture.asset(
+            "assets/icons/calender.svg", // icon SVG kamu
+            width: 20,
+            height: 20,
+          ),
         ),
       ),
-    ),
-    onTap: () async {
-      DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2024),
-        lastDate: DateTime(2035),
-      );
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2024),
+          lastDate: DateTime(2035),
+        );
 
-      if (pickedDate != null) {
-        controller.text =
-            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-      }
-    },
-  );
-}
+        if (pickedDate != null) {
+          controller.text =
+              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+        }
+      },
+    );
+  }
 
   Widget shelf() {
     return Stack(

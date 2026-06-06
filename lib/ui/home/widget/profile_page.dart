@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+   final int selectedIndex = 2;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
