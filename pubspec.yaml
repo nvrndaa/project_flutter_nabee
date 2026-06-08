@@ -54,6 +54,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^6.0.0
 
   # Code Generator (STABLE COMBO)
@@ -68,10 +69,11 @@ flutter:
     - assets/icons/
     - assets/icons/nav/
 
-flutter_native_splash:
-  color: "#FFFBE7"
-  image: "assets/images/logo_nabee.png"
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/nabee_logo_fix.png"
   
-  android_12:
-    color: "#FFFBE7"
-    image: "assets/images/logo_nabee.png"
+  adaptive_icon_background: "#FFFBE7"
+  adaptive_icon_foreground: "assets/images/nabee_logo_fix.png"

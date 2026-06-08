@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // <-- Ini tadi lupa di-import
+import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
+import 'package:flutter_nabee/ui/home/widget/edit_profile_page.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page.dart';
-import 'package:flutter_nabee/ui/home/widget/home_page_login.dart';
-import 'package:flutter_nabee/ui/home/widget/honey_calender_page.dart';
-import 'package:flutter_nabee/ui/home/widget/honey_jar_page.dart';
-import 'package:flutter_nabee/ui/home/widget/notification_page.dart';
-import 'package:flutter_nabee/ui/home/widget/profile_page.dart';
-import 'package:flutter_nabee/ui/home/widget/setting_notification.dart';
-import 'package:flutter_nabee/ui/home/widget/ulet_popup2.dart';
+import 'package:flutter_nabee/ui/intro/bloc/login/login_bloc.dart';
+import 'package:flutter_nabee/ui/intro/bloc/logout/logout_bloc.dart';
 import 'package:flutter_nabee/ui/intro/login_page.dart';
 import 'package:flutter_nabee/ui/intro/splash_page.dart';
 
+// Catatan: Pastikan kamu sudah membuat/mengimport file AuthRemoteDatasource & Bloc kamu ya!
+// Contoh import block-mu biasanya seperti ini (sesuaikan dengan folder aslimu jika error):
+// import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
+// import 'package:flutter_nabee/bloc/login/login_bloc.dart'; 
+// import 'package:flutter_nabee/bloc/logout/logout_bloc.dart';
 
 void main() {
   runApp(
@@ -22,9 +25,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-    );
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => LoginBloc(AuthRemoteDatasource())),
+        BlocProvider(create: (context) => LogoutBloc(AuthRemoteDatasource())),
+      ], // <-- Menutup daftar providers dengan rapi
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(), // <-- Sekarang posisi home sudah benar di dalam MaterialApp
+      ),
+    ); // <-- Menutup MultiBlocProvider
   }
 }

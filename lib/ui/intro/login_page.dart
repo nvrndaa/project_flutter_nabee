@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_nabee/ui/intro/signin_page.dart';
+import 'package:flutter_nabee/ui/intro/onboarding_page1.dart'; // <-- Sudah ditambahkan import halaman onboarding-mu
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Positioned(
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF4E1F0F),
+                        color: AppColors.brownText,
                       ),
                     ),
 
@@ -77,14 +79,14 @@ class _LoginPageState extends State<LoginPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE28A24),
+                            color: AppColors.orange,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE28A24),
+                            color: AppColors.orange,
                             width: 2,
                           ),
                         ),
@@ -121,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                             width: 20,
                             height: 20,
                             colorFilter: const ColorFilter.mode(
-                              Color(0xFFE28A24),
+                              AppColors.orange,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -129,14 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE28A24),
+                            color: AppColors.orange,
                             width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: const BorderSide(
-                            color: Color(0xFFE28A24),
+                            color: AppColors.orange,
                             width: 2,
                           ),
                         ),
@@ -150,9 +152,18 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // 💡 SEKARANG TOMBOLNYA SUDAH AKTIF:
+                          // Begitu user klik tombol ini, otomatis pindah ke onboarding halaman 1!
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const OnboardingPage1(),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE28A24),
+                          backgroundColor: AppColors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -199,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
-                            'icons/google.svg',
+                            'assets/icons/google.svg',
                             width: 24,
                             height: 24,
                           ),

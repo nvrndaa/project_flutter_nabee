@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -22,14 +23,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Mengambil tinggi layar untuk perhitungan layout dinamis
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: Stack(
           children: [
-
-            // Honeycomb Background
+            // Honeycomb Background (Tetap responsif di pojok kanan atas)
             Positioned(
               top: -10,
               right: -10,
@@ -42,233 +44,200 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 12,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            // Menggunakan LayoutBuilder + SingleChildScrollView agar bisa scroll saat keyboard aktif
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  child: ConstrainedBox(
+                    // Memaksa tinggi konten minimal sepanjang layar asli minus area safearea
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // HEADER
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.arrow_back),
+                              ),
+                              const Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "Edit profile",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF4E1F0F),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 48), // Penyeimbang IconButton back
+                            ],
+                          ),
 
-                  // HEADER
-                  Row(
-                    children: [
+                          // Menggunakan jarak dinamis berdasarkan tinggi layar (max 30)
+                          SizedBox(height: screenHeight * 0.03 > 30 ? 30 : screenHeight * 0.03),
 
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-
-                      const Expanded(
-                        child: Center(
-                          child: Text(
-                            "Edit profile",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF4E1F0F),
+                          // FOTO PROFILE (Ukuran dinamis)
+                          Center(
+                            child: Container(
+                              width: screenHeight * 0.11 > 90 ? 90 : screenHeight * 0.11,
+                              height: screenHeight * 0.11 > 90 ? 90 : screenHeight * 0.11,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 231, 155, 68),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.orange,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
+                                size: screenHeight * 0.05 > 40 ? 40 : screenHeight * 0.05,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
 
-                      const SizedBox(width: 48),
-                    ],
-                  ),
+                          SizedBox(height: screenHeight * 0.04 > 30 ? 30 : screenHeight * 0.04),
 
-                  const SizedBox(height: 20),
-
-                  // FOTO PROFILE
-                  Center(
-                    child: Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFECC488),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFE28A24),
-                          width: 2,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt_outlined,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // NAME
-                  const Text(
-                    "Name",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // PASSWORD
-                  const Text(
-                    "Password",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  TextField(
-                    controller: passwordController,
-                    obscureText: isPasswordHidden,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isPasswordHidden =
-                                !isPasswordHidden;
-                          });
-                        },
-                        icon: SvgPicture.asset(
-                          isPasswordHidden
-                              ? "assets/icons/eye_closed.svg"
-                              : "assets/icons/eye_line.svg",
-                          width: 22,
-                          height: 22,
-                          color: Color(0xFFE28A24  ),
-                        ),
-                      ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // EMAIL
-                  const Text(
-                    "Email address",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFE28A24),
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // LOGOUT
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: logout
-                    },
-                    child: const Row(
-                      children: [
-
-                        Icon(
-                          Icons.logout,
-                          color: Colors.red,
-                        ),
-
-                        SizedBox(width: 8),
-
-                        Text(
-                          "Log out",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 16,
+                          // NAME FIELD
+                          const Text(
+                            "Name",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          _buildTextField(controller: nameController),
+
+                          const SizedBox(height: 20),
+
+                          // PASSWORD FIELD
+                          const Text(
+                            "Password",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildTextField(
+                            controller: passwordController,
+                            obscureText: isPasswordHidden,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordHidden = !isPasswordHidden;
+                                });
+                              },
+                              icon: SvgPicture.asset(
+                                isPasswordHidden
+                                    ? "assets/icons/eye_closed.svg"
+                                    : "assets/icons/eye_line.svg",
+                                width: 22,
+                                height: 22,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.orange,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // EMAIL FIELD
+                          const Text(
+                            "Email address",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          _buildTextField(controller: emailController),
+
+                          // Menggantikan Spacer() statis dengan Expanded agar tombol logout terdorong ke bawah
+                          // saat layar luas, tetapi ikut ter-scroll saat ruang sempit
+                          const Expanded(child: SizedBox(height: 30)),
+
+                          // LOGOUT BUTTON
+                          GestureDetector(
+                            onTap: () {
+                              // TODO: logout
+                            },
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Log out",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
                     ),
                   ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                );
+              },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Helper widget untuk merapikan kode TextField agar tidak berulang
+  Widget _buildTextField({
+    required TextEditingController controller,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        suffixIcon: suffixIcon,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(
+            color: AppColors.orange,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(
+            color: AppColors.orange,
+            width: 2,
+          ),
         ),
       ),
     );

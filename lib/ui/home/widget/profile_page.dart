@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/ui/home/widget/edit_profile_page.dart';
 import 'package:flutter_nabee/ui/home/widget/home_page.dart';
+import 'package:flutter_nabee/ui/home/widget/honey_jar_page.dart'; // Import diaktifkan
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
-   final int selectedIndex = 2;
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  // Index aktif dikunci ke posisi 2 (Profile) saat halaman ini dibuka
+  int selectedIndex = 2; 
 
   @override
   Widget build(BuildContext context) {
+    // Mengambil data ukuran layar perangkat agar lebih responsive
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
 
+      // BAGIAN UTAMA: Navigasi Aktif ke HomePage dan HoneyJarPage
       bottomNavigationBar: Container(
         height: 75,
         margin: const EdgeInsets.all(16),
@@ -23,29 +35,43 @@ class ProfilePage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // HOME
+            // 1. PINDAH KE HOME (Index 0)
             GestureDetector(
               onTap: () {
+                setState(() {
+                  selectedIndex = 0;
+                });
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => const HomePage()),
                 );
               },
-              child: _navItem("assets/icons/nav/home.svg", "Home", true),
+              child: _navItem("assets/icons/nav/home.svg", "Home", selectedIndex == 0),
             ),
 
-            // HONEY JAR
-            _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", false),
-
-            // PROFILE
+            // 2. PINDAH KE HONEY JAR (Index 1)
             GestureDetector(
               onTap: () {
-                Navigator.push(
+                setState(() {
+                  selectedIndex = 1;
+                });
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => const HoneyJarPage()),
                 );
               },
-              child: _navItem("assets/icons/nav/profile.svg", "Profile", false),
+              child: _navItem("assets/icons/nav/honey_jar.svg", "Honey jar", selectedIndex == 1),
+            ),
+
+            // 3. STAY DI PROFILE (Index 2)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIndex = 2;
+                });
+                // Tetap di halaman ini
+              },
+              child: _navItem("assets/icons/nav/profile.svg", "Profile", selectedIndex == 2),
             ),
           ],
         ),
@@ -62,14 +88,13 @@ class ProfilePage extends StatelessWidget {
                 opacity: 0.4,
                 child: Image.asset(
                   "assets/images/sarang_lebah_atas.png",
-                  width: 120,
+                  width: screenWidth * 0.3,
                 ),
               ),
             ),
 
             SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-
               child: Column(
                 children: [
                   const SizedBox(height: 10),
@@ -124,8 +149,9 @@ class ProfilePage extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
+                  // Button Edit Profile
                   SizedBox(
-                    width: 180,
+                    width: screenWidth * 0.45,
                     height: 40,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -145,7 +171,7 @@ class ProfilePage extends StatelessWidget {
                       },
                       child: const Text(
                         "Edit profile",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -174,13 +200,11 @@ class ProfilePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(color: const Color(0xFFE28A24)),
                     ),
-
                     child: Row(
                       children: [
-                        // GANTI GAMBAR ULAT DI SINI
                         Container(
-                          width: 90,
-                          height: 90,
+                          width: 80,
+                          height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: const Color(0xFFC8F26D),
@@ -204,7 +228,7 @@ class ProfilePage extends StatelessWidget {
                               const Text(
                                 "Caterpillar",
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF4E1F0F),
                                 ),
@@ -233,6 +257,7 @@ class ProfilePage extends StatelessWidget {
                                     ),
                                   ),
 
+                                  // Progress Bar
                                   Expanded(
                                     child: Container(
                                       height: 12,
@@ -305,25 +330,36 @@ class ProfilePage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(title),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w500, color: Color(0xFF4E1F0F)),
+          ),
           const Spacer(),
-          const Icon(Icons.chevron_right),
+          const Icon(Icons.chevron_right, color: Color(0xFF4E1F0F)),
         ],
       ),
     );
   }
 
   Widget _navItem(String icon, String label, bool active) {
+    final Color itemColor = active ? Colors.white : const Color(0xFF5C3818);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(icon, width: 24, height: 24),
+        SvgPicture.asset(
+          icon,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(itemColor, BlendMode.srcIn),
+        ),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color: active ? Colors.white : Colors.black,
+            color: itemColor,
             fontWeight: FontWeight.bold,
+            fontSize: 12,
           ),
         ),
       ],
@@ -348,7 +384,5 @@ class _HexagonClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
