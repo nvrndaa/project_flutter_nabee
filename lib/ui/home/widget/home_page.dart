@@ -16,63 +16,65 @@ class _HomePageState extends State<HomePage> {
   String petName = "Salma";
 
   // 1. Ubah menjadi variabel biasa (bukan final) agar nilainya bisa diperbarui
-  int selectedIndex = 0; // 0 = Home, 1 = Honey Jar, 2 = Profile
+  int selectedIndex = 0;
 
   void _showEditNameDialog() {
-    final TextEditingController nameController =
-        TextEditingController(text: petName);
+  final TextEditingController nameController =
+      TextEditingController(text: petName);
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text(
-            "Ubah Nama Peliharaan",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: Color(0xFF4E1F0F)),
-          ),
-          content: TextField(
-            controller: nameController,
-            autofocus: true,
-            decoration: const InputDecoration(
-              labelText: "Nama Baru",
-              labelStyle: TextStyle(color: AppColors.orange),
-              focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.orange)),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Batal", style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (nameController.text.trim().isNotEmpty) {
-                  setState(() {
-                    petName = nameController.text.trim();
-                  });
-                }
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-              ),
-              child: const Text(
-                "Simpan",
-                style: TextStyle(
-                    color: AppColors.brownText, fontWeight: FontWeight.bold),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.transparent, // Latar belakang default dibuat transparan
+        insetPadding: const EdgeInsets.symmetric(horizontal: 40), // Jarak aman ke tepi layar
+        child: SizedBox(
+          width: 260, // Lebar kotak dikunci agar proporsional mirip kapsul di gambar
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(35), // Sudut sangat bulat membentuk kapsul
+              border: Border.all(
+                color: const Color(0xFFF1B71C), // Warna border kuning/oranye keemasan sesuai gambar
+                width: 3,
               ),
             ),
-          ],
-        );
-      },
-    );
-  }
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Tinggi pas mengikuti isi
+              children: [
+                TextField(
+                  controller: nameController,
+                  autofocus: true,
+                  textAlign: TextAlign.center, // Teks otomatis di tengah
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF4E1F0F), // Warna cokelat gelap teks
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none, // Menghilangkan garis bawah bawaan TextField
+                    hintText: "Nama",
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                  onSubmitted: (value) {
+                    // Menyimpan otomatis ketika user menekan 'Enter' atau 'Done' di keyboard
+                    if (value.trim().isNotEmpty) {
+                      setState(() {
+                        petName = value.trim();
+                      });
+                    }
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {

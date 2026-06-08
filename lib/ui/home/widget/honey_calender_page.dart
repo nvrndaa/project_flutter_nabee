@@ -52,7 +52,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
         children: [
           // 1. DEKORASI SARANG LEBAH BACKGROUND (Mentok Ujung Atas Layar)
           Positioned(
-            top: 0, 
+            top: 0,
             right: 0,
             child: Opacity(
               opacity: 0.3,
@@ -69,11 +69,13 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
               children: [
                 // --- CUSTOM APP BAR ---
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Color(0xff5C3818)),
+                        icon: const Icon(Icons.arrow_back,
+                            color: Color(0xff5C3818)),
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 4),
@@ -122,7 +124,8 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                       ),
                                       child: const Center(
                                           child: Icon(Icons.layers_outlined,
-                                              size: 50, color: AppColors.orange)),
+                                              size: 50,
+                                              color: AppColors.orange)),
                                     );
                                   },
                                 ),
@@ -132,7 +135,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                             Expanded(
                               flex: 5,
                               child: Padding(
-                                padding: const EdgeInsets.only(bottom: 45), 
+                                padding: const EdgeInsets.only(bottom: 45),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -151,7 +154,9 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                           (index) => Expanded(
                                                 child: Container(
                                                     height: 2,
-                                                    margin: const EdgeInsets.symmetric(horizontal: 1),
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 1),
                                                     color: AppColors.orange),
                                               )),
                                     ),
@@ -215,10 +220,12 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         "Saving calendar",
@@ -241,9 +248,11 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                   ),
                                   Row(
                                     children: [
-                                      Icon(Icons.chevron_left, color: Colors.grey[600], size: 22),
+                                      Icon(Icons.chevron_left,
+                                          color: Colors.grey[600], size: 22),
                                       const SizedBox(width: 15),
-                                      Icon(Icons.chevron_right, color: Colors.grey[600], size: 22),
+                                      Icon(Icons.chevron_right,
+                                          color: Colors.grey[600], size: 22),
                                     ],
                                   ),
                                 ],
@@ -256,14 +265,35 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                   scrollDirection: Axis.horizontal,
                                   child: Column(
                                     children: [
-                                      buildHoneycombRow([1, 2, 3, 4, 5, 6], isOffset: false, w: hexWidth, h: hexHeight),
-                                      buildHoneycombRow([7, 8, 9, 10, 11, 12], isOffset: true, w: hexWidth, h: hexHeight),
-                                      buildHoneycombRow([13, 14, 15, 16, 17, -1], isOffset: false, w: hexWidth, h: hexHeight), 
-                                      buildHoneycombRow([18, 19, 20, 21, 22, 23, 24], isOffset: true, w: hexWidth, h: hexHeight),
-                                      buildHoneycombRow([25, 26, 27, 28, 29, 30], isOffset: false, w: hexWidth, h: hexHeight),
-                                      buildHoneycombRow([31], isOffset: true, w: hexWidth, h: hexHeight),
-
-                                      SizedBox(height: honeyGridOverlapCompensation),
+                                      buildHoneycombRow([1, 2, 3, 4, 5, 6],
+                                          isOffset: false,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      buildHoneycombRow([7, 8, 9, 10, 11, 12],
+                                          isOffset: true,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      buildHoneycombRow(
+                                          [13, 14, 15, 16, 17, -1],
+                                          isOffset: false,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      buildHoneycombRow(
+                                          [18, 19, 20, 21, 22, 23, 24],
+                                          isOffset: true,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      buildHoneycombRow(
+                                          [25, 26, 27, 28, 29, 30],
+                                          isOffset: false,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      buildHoneycombRow([31],
+                                          isOffset: true,
+                                          w: hexWidth,
+                                          h: hexHeight),
+                                      SizedBox(
+                                          height: honeyGridOverlapCompensation),
                                     ],
                                   ),
                                 ),
@@ -275,9 +305,11 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  buildLegendItem(const Color(0xffF5EEDB), "= Empty"),
+                                  buildLegendItem(
+                                      const Color(0xffF5EEDB), "= Empty"),
                                   const SizedBox(width: 30),
-                                  buildLegendItem(const Color(0xffFFAA2C), "= Saved"),
+                                  buildLegendItem(
+                                      const Color(0xffFFAA2C), "= Saved"),
                                 ],
                               ),
                             ],
@@ -308,7 +340,8 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.orange.withOpacity(0.6), width: 1.5),
+        border:
+            Border.all(color: AppColors.orange.withOpacity(0.6), width: 1.5),
       ),
       child: Row(
         children: [
@@ -387,7 +420,8 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
             padding: const EdgeInsets.symmetric(horizontal: 1.5, vertical: 1),
             child: HoneycombWidget(
               dayText: day.toString(),
-              bgColor: isSaved ? const Color(0xffFFAA2C) : const Color(0xffF5EEDB),
+              bgColor:
+                  isSaved ? const Color(0xffFFAA2C) : const Color(0xffF5EEDB),
               textColor: isSaved ? Colors.white : Colors.grey[600]!,
               width: w,
               height: h,

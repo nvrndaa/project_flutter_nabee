@@ -18,4 +18,7 @@ class AppColors {
 
 /// text #431c13
   static const Color brownText = Color(0xff431c13);
+
+/// text #FBDFC1
+  static const Color buttonPlus = Color(0xffFBDFC1);
 }
