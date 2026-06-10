@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // <-- Ini tadi lupa di-import
 import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter_nabee/ui/home/widget/edit_profile_page.dart';
-import 'package:flutter_nabee/ui/home/widget/home_page.dart';
+import 'package:flutter_nabee/ui/home/pages/home_page.dart';
+import 'package:flutter_nabee/ui/home/pages/edit_profile_page.dart';
 import 'package:flutter_nabee/ui/intro/bloc/login/login_bloc.dart';
 import 'package:flutter_nabee/ui/intro/bloc/logout/logout_bloc.dart';
 import 'package:flutter_nabee/ui/intro/login_page.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       ], // <-- Menutup daftar providers dengan rapi
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage(), // <-- Sekarang posisi home sudah benar di dalam MaterialApp
+        home: SplashScreen(), // <-- Sekarang posisi home sudah benar di dalam MaterialApp
       ),
     ); // <-- Menutup MultiBlocProvider
   }

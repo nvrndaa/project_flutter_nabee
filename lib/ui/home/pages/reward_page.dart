@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// --- 1. KUNCI PERBAIKAN: Import file HomePage kamu ---
+import 'package:flutter_nabee/ui/home/pages/home_page.dart';
 
 class RewardPage extends StatelessWidget {
   const RewardPage({super.key});
@@ -39,7 +41,7 @@ class RewardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  'Finish your every daily task to keep your friend happy! watch them grow every time you finish enough task.',
+                  'Finish your every daily task to keep your friend happy! Watch them grow every time you finish enough tasks.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -52,12 +54,17 @@ class RewardPage extends StatelessWidget {
 
               const Spacer(),
 
+              // Bagian tombol navigasi ke HomePage
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    // --- 2. KUNCI PERBAIKAN: Navigasi pindah halaman ---
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HomePage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFE28A24),

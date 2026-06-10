@@ -7,11 +7,9 @@ class NotificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: Stack(
           children: [
-
             // Honeycomb Background
             Positioned(
               top: 0,
@@ -25,8 +23,8 @@ class NotificationPage extends StatelessWidget {
               ),
             ),
 
-            // Content
-            Padding(
+            // Content (Sudah dibungkus scroll view agar aman dari overflow)
+            SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 12,
@@ -34,7 +32,6 @@ class NotificationPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // Header
                   Row(
                     children: [
@@ -44,7 +41,6 @@ class NotificationPage extends StatelessWidget {
                         },
                         icon: const Icon(Icons.arrow_back),
                       ),
-
                       const Text(
                         "Notification",
                         style: TextStyle(
@@ -97,7 +93,6 @@ class NotificationPage extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Container(
           width: 44,
           height: 44,
@@ -113,14 +108,11 @@ class NotificationPage extends StatelessWidget {
             color: const Color(0xFF5A2D22),
           ),
         ),
-
         const SizedBox(width: 12),
-
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                 title,
                 style: const TextStyle(
@@ -129,9 +121,7 @@ class NotificationPage extends StatelessWidget {
                   color: Color(0xFF5A2D22),
                 ),
               ),
-
               const SizedBox(height: 2),
-
               Text(
                 subtitle,
                 style: TextStyle(

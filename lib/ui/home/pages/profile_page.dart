@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nabee/ui/home/widget/edit_profile_page.dart';
-import 'package:flutter_nabee/ui/home/widget/home_page.dart';
-import 'package:flutter_nabee/ui/home/widget/honey_jar_page.dart'; // Import diaktifkan
+import 'package:flutter_nabee/ui/home/pages/home_page.dart';
+import 'package:flutter_nabee/ui/home/pages/honey_jar_page.dart';
+import 'package:flutter_nabee/ui/home/pages/edit_profile_page.dart';// Import diaktifkan
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfilePage extends StatefulWidget {
