@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
+import 'package:flutter_nabee/ui/home/pages/reward_page.dart';
 import 'package:flutter_nabee/ui/intro/signin_page.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page1.dart'; // <-- Sudah ditambahkan import halaman onboarding-mu
 import 'package:flutter_svg/flutter_svg.dart';
@@ -158,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const OnboardingPage1(),
+                              builder: (context) => const RewardPage(),
                             ),
                           );
                         },

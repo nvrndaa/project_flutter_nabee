@@ -8,8 +8,7 @@ class NotificationSettingsPage extends StatefulWidget {
       _NotificationSettingsPageState();
 }
 
-class _NotificationSettingsPageState
-    extends State<NotificationSettingsPage> {
+class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   bool pushNotification = true;
   bool reminders = true;
   bool appUpdates = true;
@@ -21,11 +20,23 @@ class _NotificationSettingsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: Stack(
           children: [
+            // --- TAMBAHAN: Honeycomb Background biar serasi dengan halaman lain ---
+            Positioned(
+              top: 0,
+              right: -15,
+              child: Opacity(
+                opacity: 0.4,
+                child: Image.asset(
+                  'assets/images/sarang_lebah_atas.png',
+                  width: 140,
+                ),
+              ),
+            ),
 
+            // Main Content
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 18,
@@ -33,10 +44,8 @@ class _NotificationSettingsPageState
               ),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // HEADER
                     Row(
                       children: [
@@ -44,69 +53,51 @@ class _NotificationSettingsPageState
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: const Icon(
-                            Icons.arrow_back,
-                          ),
+                          icon: const Icon(Icons.arrow_back),
                         ),
-
                         const Expanded(
                           child: Center(
                             child: Text(
                               "Notifications",
                               style: TextStyle(
                                 fontSize: 22,
-                                fontWeight:
-                                    FontWeight.bold,
-                                color: Color(
-                                  0xFF4E1F0F,
-                                ),
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF4E1F0F),
                               ),
                             ),
                           ),
                         ),
-
-                        const SizedBox(width: 48),
+                        const SizedBox(width: 48), // Penyeimbang back button
                       ],
                     ),
 
                     const SizedBox(height: 20),
 
-                    // ICON + TITLE
+                    // ICON + TITLE INFO
                     Row(
                       children: [
-
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: BoxDecoration(
-                            color: const Color(
-                              0xFFF7E1B8,
-                            ),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF7E1B8),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
                             Icons.notifications_none,
-                            color: Color(
-                              0xFFE28A24,
-                            ),
+                            color: Color(0xFFE28A24),
                           ),
                         ),
-
                         const SizedBox(width: 12),
-
                         const Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Notifications & Alerts",
                               style: TextStyle(
                                 fontSize: 16,
-                                fontWeight:
-                                    FontWeight.bold,
-                                color: Color(
-                                  0xFF4E1F0F,
-                                ),
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF4E1F0F),
                               ),
                             ),
                             Text(
@@ -130,13 +121,11 @@ class _NotificationSettingsPageState
                         color: Color(0xFF4E1F0F),
                       ),
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
                       title: "Push notifications",
-                      subtitle:
-                          "Enable or disable all push notifications",
+                      subtitle: "Enable or disable all push notifications",
                       value: pushNotification,
                       onChanged: (value) {
                         setState(() {
@@ -154,7 +143,6 @@ class _NotificationSettingsPageState
                         color: Color(0xFF4E1F0F),
                       ),
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
@@ -167,13 +155,11 @@ class _NotificationSettingsPageState
                         });
                       },
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
                       title: "App updates & announcements",
-                      subtitle:
-                          "News, updates and important info",
+                      subtitle: "News, updates and important info",
                       value: appUpdates,
                       onChanged: (value) {
                         setState(() {
@@ -191,7 +177,6 @@ class _NotificationSettingsPageState
                         color: Color(0xFF4E1F0F),
                       ),
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
@@ -204,7 +189,6 @@ class _NotificationSettingsPageState
                         });
                       },
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
@@ -217,7 +201,6 @@ class _NotificationSettingsPageState
                         });
                       },
                     ),
-
                     const SizedBox(height: 10),
 
                     _notificationTile(
@@ -257,13 +240,10 @@ class _NotificationSettingsPageState
       ),
       child: Row(
         children: [
-
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   title,
                   style: const TextStyle(
@@ -271,7 +251,6 @@ class _NotificationSettingsPageState
                     color: Color(0xFF4E1F0F),
                   ),
                 ),
-
                 Text(
                   subtitle,
                   style: const TextStyle(
@@ -282,10 +261,11 @@ class _NotificationSettingsPageState
               ],
             ),
           ),
-
           Switch(
             value: value,
             activeColor: const Color(0xFFE28A24),
+            activeTrackColor:
+                const Color(0xFFF7E1B8), // Biar warna track-nya soft saat aktif
             onChanged: onChanged,
           ),
         ],
