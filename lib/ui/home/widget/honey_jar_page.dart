@@ -439,10 +439,8 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
                       ),
                       const SizedBox(height: 40),
 
-                      // Susunan rak
                       ...shelfRows.map((rowItems) {
                         return Padding(
-                          // 1. JARAK ANTAR RAK: Diperjauh dengan menaikkan margin bottom dari 30 ke 65
                           padding: const EdgeInsets.only(bottom: 65),
                           child: Stack(
                             alignment: Alignment.bottomLeft,
@@ -452,11 +450,9 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
                                 padding: const EdgeInsets.only(top: 50),
                                 child: shelf(),
                               ),
-                              // Isi Toples & Tombol Plus
                               Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 24),
-                                // 2. TOPLES KURANG KEBAWAH: Mengurangi margin bottom ke 2 agar nempel pas di atas garis kayu
                                 margin: const EdgeInsets.only(bottom: 0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,

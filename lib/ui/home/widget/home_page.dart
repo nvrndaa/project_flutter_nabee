@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String petName = "Salma";
 
-  // 1. Ubah menjadi variabel biasa (bukan final) agar nilainya bisa diperbarui
   int selectedIndex = 0;
 
   void _showEditNameDialog() {
@@ -26,39 +25,38 @@ class _HomePageState extends State<HomePage> {
     context: context,
     builder: (context) {
       return Dialog(
-        backgroundColor: Colors.transparent, // Latar belakang default dibuat transparan
-        insetPadding: const EdgeInsets.symmetric(horizontal: 40), // Jarak aman ke tepi layar
+        backgroundColor: Colors.transparent, 
+        insetPadding: const EdgeInsets.symmetric(horizontal: 40), 
         child: SizedBox(
           width: 260, // Lebar kotak dikunci agar proporsional mirip kapsul di gambar
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(35), // Sudut sangat bulat membentuk kapsul
+              borderRadius: BorderRadius.circular(35), 
               border: Border.all(
-                color: const Color(0xFFF1B71C), // Warna border kuning/oranye keemasan sesuai gambar
+                color: const Color(0xFFF1B71C), 
                 width: 3,
               ),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Tinggi pas mengikuti isi
+              mainAxisSize: MainAxisSize.min, 
               children: [
                 TextField(
                   controller: nameController,
                   autofocus: true,
-                  textAlign: TextAlign.center, // Teks otomatis di tengah
+                  textAlign: TextAlign.center, 
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF4E1F0F), // Warna cokelat gelap teks
+                    color: AppColors.brownText, 
                   ),
                   decoration: const InputDecoration(
-                    border: InputBorder.none, // Menghilangkan garis bawah bawaan TextField
+                    border: InputBorder.none, 
                     hintText: "Nama",
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   onSubmitted: (value) {
-                    // Menyimpan otomatis ketika user menekan 'Enter' atau 'Done' di keyboard
                     if (value.trim().isNotEmpty) {
                       setState(() {
                         petName = value.trim();
@@ -96,14 +94,11 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   selectedIndex = 0;
                 });
-                // Karena ini sudah di HomePage, tidak perlu pushReplacement ke diri sendiri
               },
-              // 2. Cek apakah selectedIndex == 0 untuk menentukan status aktif
               child: _navItem(
                   "assets/icons/nav/home.svg", "Home", selectedIndex == 0),
             ),
 
-            // HONEY JAR (Index 1)
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -114,12 +109,10 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (_) => const HoneyJarPage()),
                 );
               },
-              // 2. Cek apakah selectedIndex == 1
               child: _navItem("assets/icons/nav/honey_jar.svg", "Honey jar",
                   selectedIndex == 1),
             ),
 
-            // PROFILE (Index 2)
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -129,13 +122,11 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(builder: (_) => const ProfilePage()),
                 ).then((_) {
-                  // Ketika kembali dari ProfilePage, kembalikan posisi aktif ke Home
                   setState(() {
                     selectedIndex = 0;
                   });
                 });
               },
-              // 2. Cek apakah selectedIndex == 2
               child: _navItem("assets/icons/nav/profile.svg", "Profile",
                   selectedIndex == 2),
             ),
@@ -221,35 +212,33 @@ class _HomePageState extends State<HomePage> {
                             height: 220),
                         const SizedBox(height: 10),
 
-                        // --- TOMBOL NAMA KAPSUL + LOGO PENSIL MELAYANG ---
                         GestureDetector(
                           onTap: _showEditNameDialog,
                           child: SizedBox(
                             width:
-                                150, // Atur lebar total kapsul sesuai kebutuhan layoutmu
+                                150, 
                             height:
-                                65, // Atur tinggi total agar memberi ruang untuk lingkaran pensil di atas
+                                65, 
                             child: Stack(
                               clipBehavior: Clip
-                                  .none, // Penting agar lingkaran pensil tidak terpotong saat melayang keluar
+                                  .none, 
                               children: [
-                                // 1. Kapsul Nama Utama (Paling Belakang)
                                 Positioned(
                                   left: 0,
                                   right: 0,
                                   bottom: 0,
                                   top:
-                                      10, // Memberi sedikit ruang di atas agar pensil bisa melayang melewati border
+                                      10, 
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: AppColors
-                                          .softYellow, // Latar belakang putih/abu sangat muda sesuai gambar
+                                          .softYellow, 
                                       borderRadius: BorderRadius.circular(
-                                          30), // Membuat bentuk lonjong/kapsul sempurna
+                                          30), 
                                       border: Border.all(
                                         color: const Color(
-                                            0xffEBB700), // Warna border kuning pekat sesuai image_ce160c.png
-                                        width: 4, // Border dibuat tebal
+                                            0xffEBB700), 
+                                        width: 4,
                                       ),
                                     ),
                                     child: Center(
@@ -259,18 +248,17 @@ class _HomePageState extends State<HomePage> {
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                           color: AppColors
-                                              .brownText, // Warna teks cokelat tua
+                                              .brownText, 
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
 
-                                // 2. Tombol Bulat Pensil (Melayang di Pojok Kanan Atas)
                                 Positioned(
                                   top: 0,
                                   right:
-                                      10, // Geser posisi horizontal lingkaran pensilnya di sini
+                                      10, 
                                   child: Container(
                                     width: 38,
                                     height: 38,
@@ -279,14 +267,14 @@ class _HomePageState extends State<HomePage> {
                                       shape: BoxShape.circle,
                                       border: Border.all(
                                         color: const Color(
-                                            0xffEBB700), // Border kuning tebal yang sama
+                                            0xffEBB700), 
                                         width: 3.5,
                                       ),
                                     ),
                                     child: const Center(
                                       child: Icon(
                                         Icons
-                                            .edit, // Gunakan Icons.edit bawaan, atau ganti ke Icon khusus gambar pensilmu
+                                            .edit, 
                                         size: 16,
                                         color: Color(0xffEBB700),
                                       ),
@@ -297,7 +285,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        // -------------------------------------------------
                       ],
                     ),
                   ),
@@ -409,9 +396,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // 3. Modifikasi fungsi _navItem untuk merespons perubahan warna secara penuh
   Widget _navItem(String icon, String label, bool active) {
-    // Tentukan warna berdasarkan status halaman aktif atau tidak
     final Color itemColor = active ? Colors.white : AppColors.brownText;
 
     return Column(
@@ -421,14 +406,13 @@ class _HomePageState extends State<HomePage> {
           icon,
           width: 24,
           height: 24,
-          // Menggunakan colorFilter agar warna ikon SVG berubah menjadi putih/cokelat
           colorFilter: ColorFilter.mode(itemColor, BlendMode.srcIn),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
-            color: itemColor, // Mengikuti warna status aktif
+            color: itemColor, 
             fontWeight: FontWeight.bold,
             fontSize: 12,
           ),

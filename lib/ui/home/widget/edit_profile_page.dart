@@ -44,7 +44,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
 
-            // Menggunakan LayoutBuilder + SingleChildScrollView agar bisa scroll saat keyboard aktif
             LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
@@ -53,7 +52,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     vertical: 12,
                   ),
                   child: ConstrainedBox(
-                    // Memaksa tinggi konten minimal sepanjang layar asli minus area safearea
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
@@ -61,7 +59,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // HEADER
                           Row(
                             children: [
                               IconButton(
@@ -82,14 +79,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 48), // Penyeimbang IconButton back
+                              const SizedBox(width: 48), 
                             ],
                           ),
 
-                          // Menggunakan jarak dinamis berdasarkan tinggi layar (max 30)
                           SizedBox(height: screenHeight * 0.03 > 30 ? 30 : screenHeight * 0.03),
 
-                          // FOTO PROFILE (Ukuran dinamis)
                           Center(
                             child: Container(
                               width: screenHeight * 0.11 > 90 ? 90 : screenHeight * 0.11,
@@ -112,7 +107,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                           SizedBox(height: screenHeight * 0.04 > 30 ? 30 : screenHeight * 0.04),
 
-                          // NAME FIELD
                           const Text(
                             "Name",
                             style: TextStyle(
@@ -125,7 +119,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                           const SizedBox(height: 20),
 
-                          // PASSWORD FIELD
                           const Text(
                             "Password",
                             style: TextStyle(
@@ -159,7 +152,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                           const SizedBox(height: 20),
 
-                          // EMAIL FIELD
                           const Text(
                             "Email address",
                             style: TextStyle(
@@ -170,11 +162,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           const SizedBox(height: 8),
                           _buildTextField(controller: emailController),
 
-                          // Menggantikan Spacer() statis dengan Expanded agar tombol logout terdorong ke bawah
-                          // saat layar luas, tetapi ikut ter-scroll saat ruang sempit
                           const Expanded(child: SizedBox(height: 30)),
 
-                          // LOGOUT BUTTON
                           GestureDetector(
                             onTap: () {
                               // TODO: logout
@@ -211,7 +200,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // Helper widget untuk merapikan kode TextField agar tidak berulang
   Widget _buildTextField({
     required TextEditingController controller,
     bool obscureText = false,

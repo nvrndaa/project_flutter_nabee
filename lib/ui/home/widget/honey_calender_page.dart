@@ -12,7 +12,6 @@ class HoneyCalendarPage extends StatefulWidget {
 }
 
 class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
-  // Simulasi data tersimpan
   final List<int> savedDays = [1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 14, 15, 16, 17];
 
   void showHoneySavingDialog(int day) {
@@ -34,23 +33,19 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    // Ambil nama toples secara dinamis dari parameter, berikan fallback jika null
     final String jarName =
         widget.jar != null ? widget.jar.name : "New year bali trip";
 
-    // Kalkulasi ukuran dinamis untuk hexagon sarang lebah berdasarkan lebar layar
     double hexWidth = screenWidth * 0.105;
     if (hexWidth > 42) hexWidth = 42;
     double hexHeight = hexWidth * 1.15;
 
-    // Kompensasi tinggi vertikal negatif untuk efek merapat/overlap sarang lebah
     double honeyGridOverlapCompensation = hexHeight * 0.22;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // 1. DEKORASI SARANG LEBAH BACKGROUND (Mentok Ujung Atas Layar)
           Positioned(
             top: 0,
             right: 0,
@@ -63,7 +58,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
             ),
           ),
 
-          // 2. KONTEN UTAMA HALAMAN
           SafeArea(
             child: Column(
               children: [
@@ -91,7 +85,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                   ),
                 ),
 
-                // ISI KONTEN DI DALAM SCROLLVIEW
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -181,7 +174,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
 
                         const SizedBox(height: 20),
 
-                        // SECTION DUE DATE & MONEY LEFT
                         Row(
                           children: [
                             Expanded(
@@ -208,7 +200,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
 
                         const SizedBox(height: 25),
 
-                        // SECTION KALENDER SARANG LEBAH
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
@@ -259,7 +250,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                               ),
                               const SizedBox(height: 20),
 
-                              // Grid Angka Kalender Honeycomb
                               Center(
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
@@ -455,10 +445,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
     );
   }
 }
-
-// =================================================================
-// WIDGET-WIDGET PEMBANTU (DI TARUH DI BAWAH LUAR CLASS UTAMA)
-// =================================================================
 
 class HoneycombWidget extends StatelessWidget {
   final String dayText;
