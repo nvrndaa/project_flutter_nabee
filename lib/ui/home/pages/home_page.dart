@@ -4,8 +4,9 @@ import 'package:flutter_nabee/ui/home/pages/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/pages/notification_page.dart';
 import 'package:flutter_nabee/ui/home/pages/profile_page.dart';
 import 'package:flutter_nabee/ui/home/widget/stat_card.dart';
-import 'package:flutter_nabee/ui/home/dialog/edit_name_dialog.dart'; // Jalur import dialog barumu!
-import 'package:flutter_nabee/ui/home/widget/honey_tips_section.dart'; // Widget list artikel API Laravel
+import 'package:flutter_nabee/ui/home/dialog/edit_name_dialog.dart';
+import 'package:flutter_nabee/ui/home/widget/honey_tips_section.dart';
+import 'package:flutter_nabee/ui/models/jar_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
@@ -62,6 +63,12 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 20),
                   _buildPetSection(),
                   const SizedBox(height: 25),
+
+                  // Bagian Nearest Target (toples tabungan user)
+                  if (JarModel.jars.isNotEmpty) ...[
+                    _buildNearestTargetSection(),
+                    const SizedBox(height: 25),
+                  ],
 
                   // Bagian Honey Tips yang ambil data real-time dari API Laravel
                   const HoneyTipsSection(),
@@ -149,13 +156,13 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Column(
         children: [
-          Image.asset("assets/images/ulet_happy.png", height: 220),
+          Image.asset("assets/images/ulet_happy.png", height: 180),
           const SizedBox(height: 10),
           GestureDetector(
             onTap: _showEditNameDialog,
             child: SizedBox(
               width: 150,
-              height: 65,
+              height: 45,
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -213,6 +220,103 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNearestTargetSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Nearest Target",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.brownText,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...JarModel.jars.map(_buildJarCard),
+      ],
+    );
+  }
+
+  Widget _buildJarCard(JarModel jar) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7E68E),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                "assets/images/empty_jar.png",
+                width: 65,
+                height: 65,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 65,
+                  height: 65,
+                  decoration: BoxDecoration(
+                    color: Colors.amber[100],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.liquor, color: AppColors.orange),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    jar.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4E1F0F),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.0,
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.orange,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "0/${jar.price}",
+                      style: const TextStyle(fontSize: 10, color: Color(0xFF4E1F0F)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF4E1F0F)),
+          ],
+        ),
       ),
     );
   }

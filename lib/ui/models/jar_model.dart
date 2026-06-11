@@ -1,4 +1,6 @@
 class JarModel {
+  static final List<JarModel> jars = [];
+
   final String name;
   final String startDate;
   final String endDate;

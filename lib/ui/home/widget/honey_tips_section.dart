@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
-import 'package:flutter_nabee/data/model/response/article_response.dart';
+import 'package:flutter_nabee/data/model/response/article_response_model.dart';
 import 'package:flutter_nabee/data/datasources/article_remote_datasource.dart';
 
 class HoneyTipsSection extends StatefulWidget {
