@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart'; // Import dartz buat Either, Left, Right
 import 'package:http/http.dart' as http;
 import 'package:flutter_nabee/core/constants/variable.dart'; // Import file variable global
-import '../model/response/article_response.dart';
+import '../model/response/article_response_model.dart';
 
 class ArticleRemoteDatasource {
   Future<Either<String, List<Article>>> fetchArticles() async {

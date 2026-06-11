@@ -18,7 +18,6 @@ class HoneyJarPage extends StatefulWidget {
 }
 
 class _HoneyJarPageState extends State<HoneyJarPage> {
-  final List<JarModel> jars = [];
   int selectedIndex = 1;
 
   void showAddJarDialog() {
@@ -28,7 +27,7 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
       builder: (_) => AddJarDialog(
         onSave: (newJar) {
           setState(() {
-            jars.add(newJar);
+            JarModel.jars.add(newJar);
           });
         },
       ),
@@ -132,7 +131,7 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
             LayoutBuilder(
               builder: (context, constraints) {
                 List<Widget> gridItems = [];
-                for (var jar in jars) {
+                for (var jar in JarModel.jars) {
                   gridItems
                       .add(buildJarWidget(context, jar, constraints.maxWidth));
                 }
