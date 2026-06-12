@@ -161,55 +161,65 @@ class _HomePageState extends State<HomePage> {
           GestureDetector(
             onTap: _showEditNameDialog,
             child: SizedBox(
-              width: 150,
-              height: 45,
+              width: 140, // Disesuaikan sedikit lebarnya agar pas
+              height: 40, // Tinggi kontainer nama dibuat lebih ideal
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: 10,
+                  // 1. KOTAK UTAMA UNTUK NAMA (Warna putih dengan border kuning tebal)
+                  Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.softYellow,
+                        color: Colors
+                            .white, // Latar belakang putih bersih sesuai gambar
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: const Color(0xffEBB700),
-                          width: 4,
+                          color: const Color(
+                              0xffEBB700), // Garis tepi kuning pekat di luar
+                          width: 3.0, // Ketebalan border luar
                         ),
                       ),
                       child: Center(
-                        child: Text(
-                          petName,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.brownText,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right:
+                                  12), // Memberi space agar teks tidak tertutup tombol pensil
+                          child: Text(
+                            petName, // Menampilkan "Salma"
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Color(0xFF4E1F0F), // Warna teks cokelat tua
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
+
+                  // 2. TOMBOL EDIT PENSIL (Menempel pas di sudut kanan)
+                  // ================= SEBELUMNYA (_buildPetSection) =================
                   Positioned(
-                    top: 0,
+                    top: -6,
                     right: 10,
                     child: Container(
-                      width: 38,
-                      height: 38,
+                      width: 26, // Diperkecil dari 38 -> 26
+                      height: 26, // Diperkecil dari 38 -> 26
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: const Color(0xffEBB700),
-                          width: 3.5,
+                          width:
+                              2.0, // Ditipiskan dari 3.5 -> 2.0 agar lebih clean
                         ),
                       ),
                       child: const Center(
                         child: Icon(
                           Icons.edit,
-                          size: 16,
+                          size:
+                              12, // Diperkecil dari 16 -> 12 agar muat sempurna
                           color: Color(0xffEBB700),
                         ),
                       ),
@@ -218,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -246,76 +256,117 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        // Menambahkan clipBehavior agar kemiringan konten di dalam pas dengan lekukan kartu
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: const Color(0xFFF7E68E),
-          borderRadius: BorderRadius.circular(16),
+          color: const Color(0xFFFDE674), 
+          borderRadius: BorderRadius.circular(24),
         ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                "assets/images/empty_jar.png",
-                width: 65,
-                height: 65,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 65,
-                  height: 65,
-                  decoration: BoxDecoration(
-                    color: Colors.amber[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.liquor, color: AppColors.orange),
+        child: SizedBox(
+          height: 105, // Mengunci tinggi total kartu agar konsisten
+          child: Stack(
+            children: [
+              // 1. Gambar Toples (Nempel dasar bawah kartu)
+              Positioned(
+                left: 16,
+                bottom: -22, 
+                child: Image.asset(
+                  "assets/images/empty_jar.png",
+                  width: 75,
+                  height: 110, 
+                  fit: BoxFit.contain, 
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    jar.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF4E1F0F),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: FractionallySizedBox(
-                      widthFactor: 0.0,
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.orange,
-                          borderRadius: BorderRadius.circular(10),
+              
+              // 2. Area Teks Informasi (Diatur mepet ke kanan bawah kartu)
+              Positioned(
+                left: 107, 
+                right: 16,
+                top: 14,
+                bottom: 6, // Diperkecil dari 12 ke 6 agar teks "45% saved" mepet ke bawah mengikuti lengkungan
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                  children: [
+                    // Judul & Panah
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            jar.name, 
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4A2000),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Color(0xFF4A2000),
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                    
+                    // Tanggal Target
+                    const Text(
+                      "1 Dec, 2026", 
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF6D5333),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "0/${jar.price}",
-                      style: const TextStyle(fontSize: 10, color: Color(0xFF4E1F0F)),
+                    
+                    // Progress Bar & Teks Persentase (Bagian yang kamu maksud)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Kapsul Progress Bar Putih
+                        Container(
+                          height: 16, // Sedikit ditinggikan agar bar terasa tebal padat
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Putih solid sesuai gambar zoom-in kamu
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.white, width: 2), // Efek border track padding internal
+                          ),
+                          child: FractionallySizedBox(
+                            widthFactor: 0.45, 
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFCC00), 
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2), // Jarak tipis antara bar dengan teks di bawahnya
+                        
+                        // Teks Persentase Mepet Bawah
+                        const Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            "45% saved",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF4A2000),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const Icon(Icons.chevron_right, color: Color(0xFF4E1F0F)),
-          ],
+            ],
+          ),
         ),
       ),
     );
