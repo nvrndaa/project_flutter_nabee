@@ -24,4 +24,7 @@ class AppColors {
 
 /// text #FFAD3B
   static const Color jarProgress = Color(0xffFFAD3B);
+
+/// text #FFE87C30
+  static const Color sarang = Color(0xffFFE87C);
 }

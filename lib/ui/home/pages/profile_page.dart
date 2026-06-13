@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/data/datasources/auth_local_datasource.dart';
 import 'package:flutter_nabee/data/datasources/profile_remote_datasource.dart';
+import 'package:flutter/src/widgets/framework.dart'; // Diperlukan jika ada dependensi state standar
 import 'package:flutter_nabee/ui/home/pages/home_page.dart';
 import 'package:flutter_nabee/ui/home/pages/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/pages/edit_profile_page.dart';
+// TODO: Silakan sesuaikan path import halaman notification & login di bawah ini
+import 'package:flutter_nabee/ui/home/pages/setting_notification.dart'; 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -107,6 +110,35 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // Fungsi popup konfirmasi sebelum Logout
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Apakah Anda yakin ingin keluar dari akun ini?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal", style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              // TODO: Tambahkan fungsi hapus session/token Anda di sini jika ada, contoh:
+              // await AuthLocalDatasource().clearSession(); 
+              
+              if (!mounted) return;
+              // Arahkan kembali ke halaman login dan hapus tumpukan navigasi terdahulu
+              // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+            },
+            child: const Text("Keluar", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -164,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 opacity: 0.4,
                 child: Image.asset(
                   "assets/images/sarang_lebah_atas.png",
-                  width: screenWidth * 0.35,
+                  width: screenWidth * 0.30,
                 ),
               ),
             ),
@@ -191,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFFF0A243).withValues(alpha: 0.4),
+                        color: const Color(0xFFF0A243).withAlpha(102),
                         border: Border.all(
                           color: const Color(0xFFE28A24),
                           width: 3,
@@ -391,9 +423,41 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _settingTile("Setting"),
-                  const SizedBox(height: 10),
-                  _settingTile("Notifications"),
+                  
+                  // Menampilkan langsung tile Notifications tanpa tile Setting sebelumnya
+                  _settingTile(
+                    "Settings",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationSettingsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  // ================= TOMBOL LOGOUT SEBELAH KANAN =================
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: _showLogoutDialog,
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                      icon: const Icon(Icons.logout, color: Colors.redAccent, size: 20),
+                      label: const Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -403,26 +467,29 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  static Widget _settingTile(String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEF),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF4E1F0F),
-              fontSize: 15,
+  Widget _settingTile(String title, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFBEF),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF4E1F0F),
+                fontSize: 15,
+              ),
             ),
-          ),
-          const Spacer(),
-          const Icon(Icons.chevron_right, color: Color(0xFF4E1F0F), size: 20),
-        ],
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: Color(0xFF4E1F0F), size: 20),
+          ],
+        ),
       ),
     );
   }

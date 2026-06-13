@@ -31,7 +31,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 opacity: 0.4,
                 child: Image.asset(
                   'assets/images/sarang_lebah_atas.png',
-                  width: 140,
+                  width: 135,
                 ),
               ),
             ),

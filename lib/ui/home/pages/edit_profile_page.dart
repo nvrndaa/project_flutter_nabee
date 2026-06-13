@@ -104,11 +104,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 const SizedBox(width: 48),
                               ],
                             ),
-                            SizedBox(height: screenHeight * 0.03 > 30 ? 30 : screenHeight * 0.03),
+                            SizedBox(
+                                height: screenHeight * 0.03 > 30
+                                    ? 30
+                                    : screenHeight * 0.03),
                             Center(
                               child: Container(
-                                width: screenHeight * 0.11 > 90 ? 90 : screenHeight * 0.11,
-                                height: screenHeight * 0.11 > 90 ? 90 : screenHeight * 0.11,
+                                width: screenHeight * 0.11 > 90
+                                    ? 90
+                                    : screenHeight * 0.11,
+                                height: screenHeight * 0.11 > 90
+                                    ? 90
+                                    : screenHeight * 0.11,
                                 decoration: BoxDecoration(
                                   color: Color.fromARGB(255, 231, 155, 68),
                                   shape: BoxShape.circle,
@@ -120,11 +127,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 child: Icon(
                                   Icons.camera_alt_outlined,
                                   color: Colors.white,
-                                  size: screenHeight * 0.05 > 40 ? 40 : screenHeight * 0.05,
+                                  size: screenHeight * 0.05 > 40
+                                      ? 40
+                                      : screenHeight * 0.05,
                                 ),
                               ),
                             ),
-                            SizedBox(height: screenHeight * 0.04 > 30 ? 30 : screenHeight * 0.04),
+                            SizedBox(
+                                height: screenHeight * 0.04 > 30
+                                    ? 30
+                                    : screenHeight * 0.04),
                             const Text(
                               "Name",
                               style: TextStyle(
@@ -179,8 +191,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             GestureDetector(
                               onTap: () {
                                 context.read<LogoutBloc>().add(
-                                  const LogoutEvent.logout(),
-                                );
+                                      const LogoutEvent.logout(),
+                                    );
                               },
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,

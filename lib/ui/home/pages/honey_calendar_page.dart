@@ -123,322 +123,267 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
         );
       },
       child: Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Opacity(
-              opacity: 0.3,
-              child: Image.asset(
-                "assets/images/sarang_lebah_atas.png",
-                width: 150,
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Opacity(
+                opacity: 0.3,
+                child: Image.asset(
+                  "assets/images/sarang_lebah_atas.png",
+                  width: 150,
+                ),
               ),
             ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back,
-                            color: Color(0xff5C3818)),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          jar.name,
-                          style: const TextStyle(
-                            color: Color(0xff5C3818),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        "Rp ${NumberFormat('#,###', 'id').format(target)}",
-                        style: const TextStyle(
-                          color: AppColors.orange,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(
                       children: [
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: SizedBox(
-                                height: 220,
-                                child: Stack(
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back,
+                              color: AppColors.brownText),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            jar.name,
+                            style: const TextStyle(
+                              color: AppColors.brownText,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          
+                          // --- SUSUNAN BARU: PERSEN (ATAS) -> GARIS MERAH -> RP (BAWAH) ---
+                          IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Sisi Kiri: Botol Madu
+                                Expanded(
+                                  flex: 4,
+                                  child: Image.asset(
+                                    "assets/images/empty_jar.png",
+                                    height: 200,
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.bottomLeft,
+                                  ),
+                                ),
+                                const SizedBox(width: 8), 
+                                // Sisi Kanan: Susunan Teks & Garis Rata Kanan
+                                Expanded(
+                                  flex: 6,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end, // Rata kanan
+                                    children: [
+                                      const Spacer(), // Mendorong isi komponen ke dasar area botol
+                                      
+                                      // 1. Persentase di atas garis (Ukuran dikecilkan dari 26 ke 18)
+                                      Text(
+                                        "$percent%",
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.brownText,
+                                            height: 1.0),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      
+                                      // 2. Garis Putus-putus Merah (Di tengah-tengah teks)
+                                      Row(
+                                        children: List.generate(
+                                          16,
+                                          (index) => Expanded(
+                                            child: Container(
+                                              height: 2,
+                                              margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                                              color: AppColors.orange,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      
+                                      // 3. Rupiah sekarang berada di bawah garis putus-putus
+                                      Text(
+                                        "Rp ${NumberFormat('#,###', 'id').format(_moneySaved)}",
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.brownText,
+                                            height: 1.0),
+                                      ),
+                                      const SizedBox(height: 4), 
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: buildInfoCard(
+                                  iconPath: "assets/icons/target_salved.svg",
+                                  fallbackIcon: Icons.track_changes_rounded,
+                                  title: "Due date",
+                                  value: jar.endDate,
+                                  valueColor: AppColors.brownText,
+                                ),
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: buildInfoCard(
+                                  iconPath: "assets/icons/coin.svg",
+                                  fallbackIcon: Icons.monetization_on_rounded,
+                                  title: "Money left",
+                                  value: moneyLeft > 0
+                                      ? "Rp ${NumberFormat('#,###', 'id').format(moneyLeft)}"
+                                      : "LUNAS!",
+                                  valueColor: moneyLeft > 0
+                                      ? AppColors.orange
+                                      : Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: const Color(0xffFFFDF0),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Positioned(
-                                      left: 12,
-                                      right: 12,
-                                      bottom: 6,
-                                      height: (220 - 20) * progress,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFFFCC00),
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                                  top: Radius.circular(10)),
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              const Color(0xFFFFCC00)
-                                                  .withValues(alpha: 0.85),
-                                              const Color(0xFFFFAA2C),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Saving calendar",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.brownText,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          monthLabel,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey[500],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: _prevMonth,
+                                          child: Icon(Icons.chevron_left,
+                                              color: Colors.grey[600], size: 24),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        GestureDetector(
+                                          onTap: _nextMonth,
+                                          child: Icon(Icons.chevron_right,
+                                              color: Colors.grey[600], size: 24),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                _isLoading
+                                    ? const Padding(
+                                        padding: EdgeInsets.all(30),
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                              color: AppColors.orange),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Column(
+                                            children: [
+                                              ...dayLists.map((row) {
+                                                final isOffset =
+                                                    dayLists.indexOf(row).isOdd;
+                                                return buildHoneycombRow(
+                                                  row,
+                                                  isOffset: isOffset,
+                                                  w: hexWidth,
+                                                  h: hexHeight,
+                                                  savedDays: _savedDays.toList(),
+                                                  onDayTap: (day) {
+                                                    if (!_savedDays.contains(day)) {
+                                                      showHoneySavingDialog(day);
+                                                    }
+                                                  },
+                                                );
+                                              }),
+                                              SizedBox(
+                                                  height:
+                                                      honeyGridOverlapCompensation),
                                             ],
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Positioned.fill(
-                                      child: Image.asset(
-                                        "assets/images/empty_jar.png",
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Container(
-                                            height: 220,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xffFFF7E9),
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              border: Border.all(
-                                                  color: AppColors.orange,
-                                                  width: 3),
-                                            ),
-                                            child: const Center(
-                                              child: Icon(
-                                                  Icons.layers_outlined,
-                                                  size: 50,
-                                                  color: AppColors.orange),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              flex: 5,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 45),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                const SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      "$percent%",
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xff5C3818),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      children: List.generate(
-                                        15,
-                                        (index) => Expanded(
-                                          child: Container(
-                                            height: 22,
-                                            margin:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 1),
-                                            color: index / 15 < progress
-                                                ? AppColors.orange
-                                                : AppColors.orange
-                                                    .withValues(alpha: 0.2),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        "Rp ${NumberFormat('#,###', 'id').format(_moneySaved)}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xff5C3818),
-                                        ),
-                                      ),
-                                    ),
+                                    buildLegendItem(
+                                        const Color(0xffF5EEDB), "= Empty"),
+                                    const SizedBox(width: 30),
+                                    buildLegendItem(
+                                        const Color(0xffFFAA2C), "= Saved"),
                                   ],
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: buildInfoCard(
-                                iconPath: "assets/icons/target_salved.svg",
-                                fallbackIcon: Icons.track_changes_rounded,
-                                title: "Due date",
-                                value: jar.endDate,
-                                valueColor: const Color(0xff5C3818),
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: buildInfoCard(
-                                iconPath: "assets/icons/coin.svg",
-                                fallbackIcon: Icons.monetization_on_rounded,
-                                title: "Money left",
-                                value: moneyLeft > 0
-                                    ? "Rp ${NumberFormat('#,###', 'id').format(moneyLeft)}"
-                                    : "LUNAS!",
-                                valueColor: moneyLeft > 0
-                                    ? AppColors.orange
-                                    : Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffFFFDF0),
-                            borderRadius: BorderRadius.circular(24),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "Saving calendar",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xff5C3818),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        monthLabel,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey[500],
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: _prevMonth,
-                                        child: Icon(Icons.chevron_left,
-                                            color: Colors.grey[600], size: 24),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      GestureDetector(
-                                        onTap: _nextMonth,
-                                        child: Icon(Icons.chevron_right,
-                                            color: Colors.grey[600], size: 24),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              if (_isLoading)
-                                const Padding(
-                                  padding: EdgeInsets.all(30),
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                        color: AppColors.orange),
-                                  ),
-                                )
-                              else
-                                Center(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Column(
-                                      children: [
-                                        ...dayLists.map((row) {
-                                          final isOffset =
-                                              dayLists.indexOf(row).isOdd;
-                                          return buildHoneycombRow(
-                                            row,
-                                            isOffset: isOffset,
-                                            w: hexWidth,
-                                            h: hexHeight,
-                                            savedDays: _savedDays.toList(),
-                                            onDayTap: (day) {
-                                              if (!_savedDays.contains(day)) {
-                                                showHoneySavingDialog(day);
-                                              }
-                                            },
-                                          );
-                                        }),
-                                        SizedBox(
-                                            height:
-                                                honeyGridOverlapCompensation),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  buildLegendItem(
-                                      const Color(0xffF5EEDB), "= Empty"),
-                                  const SizedBox(width: 30),
-                                  buildLegendItem(
-                                      const Color(0xffFFAA2C), "= Saved"),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
+                          const SizedBox(height: 30),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -488,7 +433,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
               width: 22,
               height: 22,
               errorBuilder: (context, error, stackTrace) =>
-                  Icon(fallbackIcon, color: const Color(0xffE8A44C), size: 22),
+                  Icon(fallbackIcon, color: AppColors.orange, size: 22),
             ),
           ),
           const SizedBox(width: 10),
