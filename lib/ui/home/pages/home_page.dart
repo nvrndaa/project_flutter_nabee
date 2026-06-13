@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
+import 'package:flutter_nabee/data/datasources/auth_local_datasource.dart';
+import 'package:flutter_nabee/data/datasources/honey_jar_remote_datasource.dart';
+import 'package:flutter_nabee/ui/home/bloc/article/article_bloc.dart';
+import 'package:flutter_nabee/ui/home/pages/honey_calendar_page.dart';
 import 'package:flutter_nabee/ui/home/pages/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/pages/notification_page.dart';
 import 'package:flutter_nabee/ui/home/pages/profile_page.dart';
@@ -17,19 +22,71 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String petName = "Salma";
+  String _greetingName = "";
+  String _characterName = "";
   int selectedIndex = 0;
+  List<JarModel> _jars = [];
+  int _totalSaved = 0;
+  int _targetSolved = 0;
 
-  // Fungsi buat manggil popup dialog ganti nama
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    _loadJars();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final email = await AuthLocalDatasource().getUserEmail();
+      final petName = await AuthLocalDatasource().getPetName();
+      if (!mounted) return;
+      String greeting = email;
+      final atIndex = greeting.indexOf('@');
+      if (atIndex > 0) greeting = greeting.substring(0, atIndex);
+      setState(() {
+        _greetingName = greeting;
+        _characterName = petName;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _greetingName = '';
+          _characterName = '';
+        });
+      }
+    }
+  }
+
+  Future<void> _loadJars() async {
+    final result = await HoneyJarRemoteDatasource().fetchHoneyJars();
+    if (!mounted) return;
+    result.fold(
+      (_) {},
+      (jars) {
+        final list = jars.map((r) => JarModel.fromResponse(r)).toList();
+        final saved = jars.fold<int>(
+            0, (sum, j) => sum + (int.tryParse(j.currentAmount) ?? 0));
+        final solved = jars.where((j) => j.isCompleted).length;
+        setState(() {
+          _jars = list;
+          _totalSaved = saved;
+          _targetSolved = solved;
+        });
+      },
+    );
+  }
+
   void _showEditNameDialog() async {
     final newName = await showDialog<String>(
       context: context,
-      builder: (context) => EditNameDialog(currentName: petName),
+      builder: (context) => EditNameDialog(currentName: _characterName),
     );
 
     if (newName != null && mounted) {
+      await AuthLocalDatasource().savePetName(newName);
       setState(() {
-        petName = newName;
+        _characterName = newName;
       });
     }
   }
@@ -42,7 +99,6 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Background sarang lebah atas kanan
             Positioned(
               top: 0,
               right: 0,
@@ -52,29 +108,38 @@ class _HomePageState extends State<HomePage> {
                     width: 140),
               ),
             ),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 20),
-                  _buildStatCards(),
-                  const SizedBox(height: 20),
-                  _buildPetSection(),
-                  const SizedBox(height: 25),
-
-                  // Bagian Nearest Target (toples tabungan user)
-                  if (JarModel.jars.isNotEmpty) ...[
-                    _buildNearestTargetSection(),
+            NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification is ScrollEndNotification ||
+                    notification is UserScrollNotification) {
+                  final metrics = notification.metrics;
+                  if (metrics.pixels >= metrics.maxScrollExtent - 300) {
+                    context
+                        .read<ArticleBloc>()
+                        .add(const ArticleEvent.fetchMoreArticles());
+                  }
+                }
+                return false;
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 20),
+                    _buildStatCards(),
+                    const SizedBox(height: 20),
+                    _buildPetSection(),
                     const SizedBox(height: 25),
+                    if (_jars.isNotEmpty) ...[
+                      _buildNearestTargetSection(),
+                      const SizedBox(height: 25),
+                    ],
+                    const HoneyTipsSection(),
+                    const SizedBox(height: 20),
                   ],
-
-                  // Bagian Honey Tips yang ambil data real-time dari API Laravel
-                  const HoneyTipsSection(),
-
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
             ),
           ],
@@ -83,14 +148,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ================= SUB-WIDGET BUILDER =================
-
   Widget _buildHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          "Hi, $petName!",
+          _greetingName.isEmpty ? "Hi!" : "Hi, $_greetingName!",
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -122,21 +185,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildStatCards() {
+    final moneySaved =
+        _totalSaved >= 1000000
+            ? 'Rp ${(_totalSaved / 1000000).toStringAsFixed(1)} JT'
+            : 'Rp $_totalSaved';
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: StatCard(
             icon: "assets/icons/target_salved.svg",
             title: "Target solved",
-            value: "0 Jars",
+            value: "$_targetSolved Jars",
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: StatCard(
             icon: "assets/icons/coin.svg",
             title: "Money saved",
-            value: "0 Rupiah",
+            value: moneySaved,
           ),
         ),
       ],
@@ -161,65 +228,54 @@ class _HomePageState extends State<HomePage> {
           GestureDetector(
             onTap: _showEditNameDialog,
             child: SizedBox(
-              width: 140, // Disesuaikan sedikit lebarnya agar pas
-              height: 40, // Tinggi kontainer nama dibuat lebih ideal
+              width: 140,
+              height: 40,
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  // 1. KOTAK UTAMA UNTUK NAMA (Warna putih dengan border kuning tebal)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors
-                            .white, // Latar belakang putih bersih sesuai gambar
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: const Color(
-                              0xffEBB700), // Garis tepi kuning pekat di luar
-                          width: 3.0, // Ketebalan border luar
+                          color: const Color(0xffEBB700),
+                          width: 3.0,
                         ),
                       ),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              right:
-                                  12), // Memberi space agar teks tidak tertutup tombol pensil
+                          padding: const EdgeInsets.only(right: 12),
                           child: Text(
-                            petName, // Menampilkan "Salma"
+                            _characterName.isEmpty ? "Name" : _characterName,
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Color(0xFF4E1F0F), // Warna teks cokelat tua
+                              color: Color(0xFF4E1F0F),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-
-                  // 2. TOMBOL EDIT PENSIL (Menempel pas di sudut kanan)
-                  // ================= SEBELUMNYA (_buildPetSection) =================
                   Positioned(
                     top: -6,
                     right: 10,
                     child: Container(
-                      width: 26, // Diperkecil dari 38 -> 26
-                      height: 26, // Diperkecil dari 38 -> 26
+                      width: 26,
+                      height: 26,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: const Color(0xffEBB700),
-                          width:
-                              2.0, // Ditipiskan dari 3.5 -> 2.0 agar lebih clean
+                          width: 2.0,
                         ),
                       ),
                       child: const Center(
                         child: Icon(
                           Icons.edit,
-                          size:
-                              12, // Diperkecil dari 16 -> 12 agar muat sempurna
+                          size: 12,
                           color: Color(0xffEBB700),
                         ),
                       ),
@@ -235,6 +291,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNearestTargetSection() {
+    final sorted = List<JarModel>.from(_jars)
+      ..sort((a, b) {
+        final aDate = DateTime.tryParse(a.endDate) ?? DateTime(9999);
+        final bDate = DateTime.tryParse(b.endDate) ?? DateTime(9999);
+        return aDate.compareTo(bDate);
+      });
+    final nearest = sorted.isNotEmpty ? sorted.first : null;
+    if (nearest == null) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -247,55 +312,62 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         const SizedBox(height: 12),
-        ...JarModel.jars.map(_buildJarCard),
+        _buildJarCard(nearest),
       ],
     );
   }
 
   Widget _buildJarCard(JarModel jar) {
+    final target = int.tryParse(jar.price) ?? 1;
+    final current = int.tryParse(jar.currentAmount) ?? 0;
+    final progress = (current / target).clamp(0.0, 1.0);
+    final percent = (progress * 100).toInt();
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        // Menambahkan clipBehavior agar kemiringan konten di dalam pas dengan lekukan kartu
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => HoneyCalendarPage(jar: jar)),
+          );
+        },
+        child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: const Color(0xFFFDE674), 
+          color: const Color(0xFFFDE674),
           borderRadius: BorderRadius.circular(24),
         ),
         child: SizedBox(
-          height: 105, // Mengunci tinggi total kartu agar konsisten
+          height: 105,
           child: Stack(
             children: [
-              // 1. Gambar Toples (Nempel dasar bawah kartu)
               Positioned(
                 left: 16,
-                bottom: -22, 
+                bottom: -22,
                 child: Image.asset(
                   "assets/images/empty_jar.png",
                   width: 75,
-                  height: 110, 
-                  fit: BoxFit.contain, 
+                  height: 110,
+                  fit: BoxFit.contain,
                 ),
               ),
-              
-              // 2. Area Teks Informasi (Diatur mepet ke kanan bawah kartu)
               Positioned(
-                left: 107, 
+                left: 107,
                 right: 16,
                 top: 14,
-                bottom: 6, // Diperkecil dari 12 ke 6 agar teks "45% saved" mepet ke bawah mengikuti lengkungan
+                bottom: 6,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Judul & Panah
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(
-                            jar.name, 
+                            jar.name,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -312,48 +384,42 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    
-                    // Tanggal Target
-                    const Text(
-                      "1 Dec, 2026", 
-                      style: TextStyle(
+                    Text(
+                      jar.endDate,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Color(0xFF6D5333),
                       ),
                     ),
-                    
-                    // Progress Bar & Teks Persentase (Bagian yang kamu maksud)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Kapsul Progress Bar Putih
                         Container(
-                          height: 16, // Sedikit ditinggikan agar bar terasa tebal padat
+                          height: 16,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.white, // Putih solid sesuai gambar zoom-in kamu
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white, width: 2), // Efek border track padding internal
+                            border:
+                                Border.all(color: Colors.white, width: 2),
                           ),
                           child: FractionallySizedBox(
-                            widthFactor: 0.45, 
+                            widthFactor: progress,
                             alignment: Alignment.centerLeft,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFCC00), 
+                                color: const Color(0xFFFFCC00),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 2), // Jarak tipis antara bar dengan teks di bawahnya
-                        
-                        // Teks Persentase Mepet Bawah
-                        const Align(
+                        const SizedBox(height: 2),
+                        Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            "45% saved",
-                            style: TextStyle(
+                            "$percent% saved",
+                            style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF4A2000),
@@ -368,6 +434,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

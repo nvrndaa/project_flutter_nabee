@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/core/constants/colors.dart';
+import 'package:flutter_nabee/data/datasources/honey_jar_remote_datasource.dart';
 import 'package:flutter_nabee/ui/home/pages/home_page.dart';
 import 'package:flutter_nabee/ui/home/widget/honey_shelf_widget.dart';
 import 'package:flutter_nabee/ui/home/pages/profile_page.dart';
-
-// --- HUBUNGKAN KE FOLDER DIALOG DAN WIDGET ---
 import 'package:flutter_nabee/ui/home/dialog/add_jar_dialog.dart';
-
-// --- IMPORT MODEL ---
 import 'package:flutter_nabee/ui/models/jar_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,6 +17,27 @@ class HoneyJarPage extends StatefulWidget {
 
 class _HoneyJarPageState extends State<HoneyJarPage> {
   int selectedIndex = 1;
+  List<JarModel> _jars = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadJars();
+  }
+
+  Future<void> _loadJars() async {
+    setState(() => _isLoading = true);
+    final result = await HoneyJarRemoteDatasource().fetchHoneyJars();
+    if (!mounted) return;
+    result.fold(
+      (error) => setState(() => _isLoading = false),
+      (jars) => setState(() {
+        _jars = jars.map((r) => JarModel.fromResponse(r)).toList();
+        _isLoading = false;
+      }),
+    );
+  }
 
   void showAddJarDialog() {
     showDialog(
@@ -26,9 +45,7 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
       barrierDismissible: false,
       builder: (_) => AddJarDialog(
         onSave: (newJar) {
-          setState(() {
-            JarModel.jars.add(newJar);
-          });
+          setState(() => _jars.add(newJar));
         },
       ),
     );
@@ -130,13 +147,20 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
             ),
             LayoutBuilder(
               builder: (context, constraints) {
+                if (_isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.orange),
+                  );
+                }
+
+                final rowAvailable = constraints.maxWidth - 48;
                 List<Widget> gridItems = [];
-                for (var jar in JarModel.jars) {
-                  gridItems
-                      .add(buildJarWidget(context, jar, constraints.maxWidth));
+                for (var jar in _jars) {
+                  gridItems.add(
+                      buildJarWidget(context, jar, rowAvailable));
                 }
                 gridItems.add(
-                    buildAddButton(constraints.maxWidth, showAddJarDialog));
+                    buildAddButton(rowAvailable, showAddJarDialog));
 
                 List<List<Widget>> shelfRows = [];
                 for (int i = 0; i < gridItems.length; i += 3) {
@@ -176,19 +200,15 @@ class _HoneyJarPageState extends State<HoneyJarPage> {
                                 child: buildShelf(),
                               ),
                               Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                margin: const EdgeInsets.only(bottom: 0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: rowItems.map((item) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: item,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
+                                 padding:
+                                     const EdgeInsets.symmetric(horizontal: 24),
+                                 margin: const EdgeInsets.only(bottom: 0),
+                                 child: Row(
+                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                   crossAxisAlignment: CrossAxisAlignment.end,
+                                   children: rowItems,
+                                 ),
+                               ),
                             ],
                           ),
                         );

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // <-- Ini tadi lupa di-import
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_nabee/core/services/local_notification_service.dart';
+import 'package:flutter_nabee/data/datasources/article_remote_datasource.dart';
 import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter_nabee/ui/home/pages/home_page.dart';
-import 'package:flutter_nabee/ui/home/pages/edit_profile_page.dart';
+import 'package:flutter_nabee/data/datasources/notification_remote_datasource.dart';
+import 'package:flutter_nabee/data/datasources/transaction_remote_datasource.dart';
+import 'package:flutter_nabee/ui/home/bloc/article/article_bloc.dart';
+import 'package:flutter_nabee/ui/home/bloc/notification/notification_bloc.dart';
+import 'package:flutter_nabee/ui/home/bloc/transaction/transaction_bloc.dart';
 import 'package:flutter_nabee/ui/intro/bloc/login/login_bloc.dart';
 import 'package:flutter_nabee/ui/intro/bloc/logout/logout_bloc.dart';
-import 'package:flutter_nabee/ui/intro/login_page.dart';
 import 'package:flutter_nabee/ui/intro/splash_page.dart';
 
-// Catatan: Pastikan kamu sudah membuat/mengimport file AuthRemoteDatasource & Bloc kamu ya!
-// Contoh import block-mu biasanya seperti ini (sesuaikan dengan folder aslimu jika error):
-// import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
-// import 'package:flutter_nabee/bloc/login/login_bloc.dart'; 
-// import 'package:flutter_nabee/bloc/logout/logout_bloc.dart';
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotificationService().init();
   runApp(
     const MyApp(),
   );
@@ -29,11 +29,20 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => LoginBloc(AuthRemoteDatasource())),
         BlocProvider(create: (context) => LogoutBloc(AuthRemoteDatasource())),
-      ], // <-- Menutup daftar providers dengan rapi
+        BlocProvider(
+            create: (context) =>
+                ArticleBloc(ArticleRemoteDatasource())),
+        BlocProvider(
+            create: (context) =>
+                TransactionBloc(TransactionRemoteDatasource())),
+        BlocProvider(
+            create: (context) =>
+                NotificationBloc(NotificationLogRemoteDatasource())),
+      ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(), // <-- Sekarang posisi home sudah benar di dalam MaterialApp
+        home: SplashScreen(),
       ),
-    ); // <-- Menutup MultiBlocProvider
+    );
   }
 }

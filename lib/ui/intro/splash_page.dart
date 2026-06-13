@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
-import 'package:flutter_nabee/ui/intro/login_page.dart';
 import 'package:flutter_nabee/ui/intro/onboarding_page1.dart';
 
 

@@ -24,7 +24,7 @@ class RewardPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.yellow.withOpacity(0.4),
+                      color: Colors.yellow.withValues(alpha: 0.4),
                       blurRadius: 100,
                       spreadRadius: 20,
                     ),

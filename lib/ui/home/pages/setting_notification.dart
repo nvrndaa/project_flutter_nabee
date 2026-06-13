@@ -263,7 +263,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
           ),
           Switch(
             value: value,
-            activeColor: const Color(0xFFE28A24),
+            activeThumbColor: const Color(0xFFE28A24),
             activeTrackColor:
                 const Color(0xFFF7E1B8), // Biar warna track-nya soft saat aktif
             onChanged: onChanged,

@@ -21,4 +21,7 @@ class AppColors {
 
 /// text #FBDFC1
   static const Color buttonPlus = Color(0xffFBDFC1);
+
+/// text #FFAD3B
+  static const Color jarProgress = Color(0xffFFAD3B);
 }

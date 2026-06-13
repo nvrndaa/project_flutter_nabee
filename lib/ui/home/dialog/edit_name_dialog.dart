@@ -1,26 +1,52 @@
 import 'package:flutter/material.dart';
 
-class EditNameDialog extends StatelessWidget {
+class EditNameDialog extends StatefulWidget {
   final String currentName;
 
   const EditNameDialog({super.key, required this.currentName});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController(text: currentName);
+  State<EditNameDialog> createState() => _EditNameDialogState();
+}
 
+class _EditNameDialogState extends State<EditNameDialog> {
+  late final TextEditingController _nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.currentName);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final value = _nameController.text.trim();
+    if (value.isNotEmpty) {
+      Navigator.pop(context, value);
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent, // Transparan biar border melengkungnya rapi
+      backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 40),
       child: SizedBox(
-        width: 260, // Lebar kotak kapsul dialog
+        width: 260,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(35),
             border: Border.all(
-              color: const Color(0xFFF1B71C), // Border kuning emas khas Nabee
+              color: const Color(0xFFF1B71C),
               width: 3,
             ),
           ),
@@ -28,9 +54,11 @@ class EditNameDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: nameController,
+                controller: _nameController,
                 autofocus: true,
                 textAlign: TextAlign.center,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _submit(),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -38,16 +66,9 @@ class EditNameDialog extends StatelessWidget {
                 ),
                 decoration: const InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Nama",
+                  hintText: "Name",
                   hintStyle: TextStyle(color: Colors.grey),
                 ),
-                onSubmitted: (value) {
-                  if (value.trim().isNotEmpty) {
-                    Navigator.pop(context, value.trim()); // Kirim nama baru pas di-enter
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
               ),
             ],
           ),

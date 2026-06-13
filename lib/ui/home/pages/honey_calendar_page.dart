@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
+import 'package:flutter_nabee/data/model/response/transaction_response_model.dart';
+import 'package:flutter_nabee/ui/home/bloc/transaction/transaction_bloc.dart';
 import 'package:flutter_nabee/ui/home/widget/honeycomb_widget.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-// --- IMPORT FILE PECAHAN BARU ---
 import 'package:flutter_nabee/ui/home/dialog/honey_saving_dialog.dart';
-
+import 'package:flutter_nabee/ui/models/jar_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class HoneyCalendarPage extends StatefulWidget {
-  final dynamic jar;
+  final JarModel jar;
 
   const HoneyCalendarPage({super.key, required this.jar});
 
@@ -17,35 +19,110 @@ class HoneyCalendarPage extends StatefulWidget {
 }
 
 class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
-  final List<int> savedDays = [1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 14, 15, 16, 17];
+  late DateTime _currentMonth;
+  Set<int> _savedDays = {};
+  bool _isLoading = true;
+  int _moneySaved = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _currentMonth = DateTime(now.year, now.month);
+    _loadTransactions();
+  }
+
+  void _loadTransactions() {
+    setState(() => _isLoading = true);
+    context.read<TransactionBloc>().add(
+          const TransactionEvent.fetchTransactions(),
+        );
+  }
+
+  void _processTransactions(List<TransactionResponseModel> txns) {
+    final jarTxns =
+        txns.where((t) => t.honeyJarId == (widget.jar.id ?? -1));
+    final saved = <int>{};
+    int total = 0;
+    for (final t in jarTxns) {
+      final date = DateTime.tryParse(t.createdAt);
+      if (date != null &&
+          date.year == _currentMonth.year &&
+          date.month == _currentMonth.month) {
+        saved.add(date.day);
+      }
+      total += int.tryParse(t.amount) ?? 0;
+    }
+    if (mounted) {
+      setState(() {
+        _savedDays = saved;
+        _moneySaved = total;
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _prevMonth() {
+    setState(() {
+      _currentMonth =
+          DateTime(_currentMonth.year, _currentMonth.month - 1);
+    });
+    _loadTransactions();
+  }
+
+  void _nextMonth() {
+    setState(() {
+      _currentMonth =
+          DateTime(_currentMonth.year, _currentMonth.month + 1);
+    });
+    _loadTransactions();
+  }
 
   void showHoneySavingDialog(int day) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) {
-        return HoneySavingDialog(
-          day: day,
-          onSave: (amount) {
-            debugPrint("Menyimpan madu untuk hari ke-$day sebesar Rp. $amount");
-          },
-        );
-      },
+      builder: (context) => HoneySavingDialog(
+        day: day,
+        month: _currentMonth.month,
+        year: _currentMonth.year,
+        honeyJarId: widget.jar.id ?? 0,
+        onSaved: _loadTransactions,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final String jarName =
-        widget.jar != null ? widget.jar.name : "New year bali trip";
+    final jar = widget.jar;
+    final target = int.tryParse(jar.price) ?? 1;
+    final current = int.tryParse(jar.currentAmount) ?? 0;
+    final progress = (current / target).clamp(0.0, 1.0);
+    final percent = (progress * 100).toInt();
+    final moneyLeft = target - _moneySaved;
+    final monthLabel = DateFormat('MMMM, yyyy').format(_currentMonth);
 
     double hexWidth = screenWidth * 0.105;
     if (hexWidth > 42) hexWidth = 42;
     double hexHeight = hexWidth * 1.15;
     double honeyGridOverlapCompensation = hexHeight * 0.22;
 
-    return Scaffold(
+    final daysInMonth =
+        DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
+    final dayLists = _chunkDays(daysInMonth);
+
+    return BlocListener<TransactionBloc, TransactionState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          success: (data) => _processTransactions(data),
+          error: (_) {
+            if (mounted) setState(() => _isLoading = false);
+          },
+          orElse: () {},
+        );
+      },
+      child: Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -63,7 +140,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
           SafeArea(
             child: Column(
               children: [
-                // CUSTOM APP BAR
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -75,12 +151,23 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          jar.name,
+                          style: const TextStyle(
+                            color: Color(0xff5C3818),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       Text(
-                        jarName,
+                        "Rp ${NumberFormat('#,###', 'id').format(target)}",
                         style: const TextStyle(
-                          color: Color(0xff5C3818),
+                          color: AppColors.orange,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -93,7 +180,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        // TOPLES PROFILE ROW
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
@@ -101,24 +187,58 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                               flex: 5,
                               child: SizedBox(
                                 height: 220,
-                                child: Image.asset(
-                                  "assets/images/empty_jar.png",
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      height: 220,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xffFFF7E9),
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                            color: AppColors.orange, width: 3),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 12,
+                                      right: 12,
+                                      bottom: 6,
+                                      height: (220 - 20) * progress,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFFCC00),
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(10)),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              const Color(0xFFFFCC00)
+                                                  .withValues(alpha: 0.85),
+                                              const Color(0xFFFFAA2C),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      child: const Center(
-                                          child: Icon(Icons.layers_outlined,
-                                              size: 50,
-                                              color: AppColors.orange)),
-                                    );
-                                  },
+                                    ),
+                                    Positioned.fill(
+                                      child: Image.asset(
+                                        "assets/images/empty_jar.png",
+                                        fit: BoxFit.contain,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            height: 220,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xffFFF7E9),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              border: Border.all(
+                                                  color: AppColors.orange,
+                                                  width: 3),
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                  Icons.layers_outlined,
+                                                  size: 50,
+                                                  color: AppColors.orange),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -130,9 +250,9 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    const Text(
-                                      "45%",
-                                      style: TextStyle(
+                                    Text(
+                                      "$percent%",
+                                      style: const TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w900,
                                         color: Color(0xff5C3818),
@@ -145,19 +265,23 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                         (index) => Expanded(
                                           child: Container(
                                             height: 22,
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 1),
-                                            color: AppColors.orange,
+                                            margin:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 1),
+                                            color: index / 15 < progress
+                                                ? AppColors.orange
+                                                : AppColors.orange
+                                                    .withValues(alpha: 0.2),
                                           ),
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 6),
-                                    const FittedBox(
+                                    FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
-                                        "Rp. 2,250,000",
-                                        style: TextStyle(
+                                        "Rp ${NumberFormat('#,###', 'id').format(_moneySaved)}",
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xff5C3818),
@@ -171,7 +295,6 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        // INFO CARDS TARGET & SISA COIN
                         Row(
                           children: [
                             Expanded(
@@ -179,7 +302,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                 iconPath: "assets/icons/target_salved.svg",
                                 fallbackIcon: Icons.track_changes_rounded,
                                 title: "Due date",
-                                value: "1 Dec, 2026",
+                                value: jar.endDate,
                                 valueColor: const Color(0xff5C3818),
                               ),
                             ),
@@ -189,14 +312,17 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                 iconPath: "assets/icons/coin.svg",
                                 fallbackIcon: Icons.monetization_on_rounded,
                                 title: "Money left",
-                                value: "-2,750,000",
-                                valueColor: AppColors.orange,
+                                value: moneyLeft > 0
+                                    ? "Rp ${NumberFormat('#,###', 'id').format(moneyLeft)}"
+                                    : "LUNAS!",
+                                valueColor: moneyLeft > 0
+                                    ? AppColors.orange
+                                    : Colors.green,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 25),
-                        // CONTAINER GRID UTAMA
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
@@ -225,7 +351,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        "May, 2026",
+                                        monthLabel,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey[500],
@@ -236,67 +362,59 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                   ),
                                   Row(
                                     children: [
-                                      Icon(Icons.chevron_left,
-                                          color: Colors.grey[600], size: 22),
-                                      const SizedBox(width: 15),
-                                      Icon(Icons.chevron_right,
-                                          color: Colors.grey[600], size: 22),
+                                      GestureDetector(
+                                        onTap: _prevMonth,
+                                        child: Icon(Icons.chevron_left,
+                                            color: Colors.grey[600], size: 24),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      GestureDetector(
+                                        onTap: _nextMonth,
+                                        child: Icon(Icons.chevron_right,
+                                            color: Colors.grey[600], size: 24),
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 20),
-                              // Grid Pemanggilan Hasil Ekstraksi
-                              Center(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Column(
-                                    children: [
-                                      buildHoneycombRow([1, 2, 3, 4, 5, 6],
-                                          isOffset: false,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      buildHoneycombRow([7, 8, 9, 10, 11, 12],
-                                          isOffset: true,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      buildHoneycombRow(
-                                          [13, 14, 15, 16, 17, -1],
-                                          isOffset: false,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      buildHoneycombRow(
-                                          [18, 19, 20, 21, 22, 23, 24],
-                                          isOffset: true,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      buildHoneycombRow(
-                                          [25, 26, 27, 28, 29, 30],
-                                          isOffset: false,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      buildHoneycombRow([31],
-                                          isOffset: true,
-                                          w: hexWidth,
-                                          h: hexHeight,
-                                          savedDays: savedDays,
-                                          onDayTap: showHoneySavingDialog),
-                                      SizedBox(
-                                          height: honeyGridOverlapCompensation),
-                                    ],
+                              if (_isLoading)
+                                const Padding(
+                                  padding: EdgeInsets.all(30),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                        color: AppColors.orange),
+                                  ),
+                                )
+                              else
+                                Center(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Column(
+                                      children: [
+                                        ...dayLists.map((row) {
+                                          final isOffset =
+                                              dayLists.indexOf(row).isOdd;
+                                          return buildHoneycombRow(
+                                            row,
+                                            isOffset: isOffset,
+                                            w: hexWidth,
+                                            h: hexHeight,
+                                            savedDays: _savedDays.toList(),
+                                            onDayTap: (day) {
+                                              if (!_savedDays.contains(day)) {
+                                                showHoneySavingDialog(day);
+                                              }
+                                            },
+                                          );
+                                        }),
+                                        SizedBox(
+                                            height:
+                                                honeyGridOverlapCompensation),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
                               const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -321,7 +439,25 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
           ),
         ],
       ),
+      ),
     );
+  }
+
+  List<List<int>> _chunkDays(int totalDays) {
+    final rows = <List<int>>[];
+    int i = 1;
+    while (i <= totalDays) {
+      final row = <int>[];
+      for (int j = 0; j < 6 && i <= totalDays; j++) {
+        row.add(i);
+        i++;
+      }
+      if (row.length < 6) {
+        row.add(-1); // filler cell
+      }
+      rows.add(row);
+    }
+    return rows;
   }
 
   Widget buildInfoCard({
@@ -336,8 +472,8 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: AppColors.orange.withOpacity(0.6), width: 1.5),
+        border: Border.all(
+            color: AppColors.orange.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Row(
         children: [

@@ -21,6 +21,7 @@ class User {
   final int? id;
   final String? name;
   final String? email;
+  final String? avatar;
   final dynamic emailVerifiedAt;
   final dynamic createdAt;
   final dynamic updatedAt;
@@ -29,6 +30,7 @@ class User {
     this.id,
     this.name,
     this.email,
+    this.avatar,
     this.emailVerifiedAt,
     this.createdAt,
     this.updatedAt,
@@ -42,6 +44,7 @@ class User {
     id: json["id"],
     name: json["name"],
     email: json["email"],
+    avatar: json["avatar"],
     emailVerifiedAt: json["email_verified_at"],
     createdAt: json["created_at"],
     updatedAt: json["updated_at"],
@@ -51,6 +54,7 @@ class User {
     "id": id,
     "name": name,
     "email": email,
+    "avatar": avatar,
     "email_verified_at": emailVerifiedAt,
     "created_at": createdAt,
     "updated_at": updatedAt,

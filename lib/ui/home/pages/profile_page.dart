@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nabee/data/datasources/auth_local_datasource.dart';
+import 'package:flutter_nabee/data/datasources/profile_remote_datasource.dart';
 import 'package:flutter_nabee/ui/home/pages/home_page.dart';
 import 'package:flutter_nabee/ui/home/pages/honey_jar_page.dart';
 import 'package:flutter_nabee/ui/home/pages/edit_profile_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,6 +16,96 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int selectedIndex = 2;
+  String _userName = '';
+  String _userEmail = '';
+  String _avatarUrl = '';
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final name = await AuthLocalDatasource().getUserName();
+    final email = await AuthLocalDatasource().getUserEmail();
+    final avatar = await AuthLocalDatasource().getAvatarUrl();
+    if (!mounted) return;
+    setState(() {
+      _userName = name;
+      _userEmail = email;
+      _avatarUrl = avatar;
+    });
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: source, maxWidth: 512);
+    if (picked == null) return;
+
+    setState(() => _isLoading = true);
+
+    final result =
+        await ProfileRemoteDatasource().updateAvatar(picked.path);
+    if (!mounted) return;
+    result.fold(
+      (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error)),
+        );
+        setState(() => _isLoading = false);
+      },
+      (_) async {
+        final avatar = await AuthLocalDatasource().getAvatarUrl();
+        if (!mounted) return;
+        setState(() {
+          _avatarUrl = avatar;
+          _isLoading = false;
+        });
+      },
+    );
+  }
+
+  void _showImagePicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Pilih Foto Profil',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Color(0xFFE28A24)),
+                title: const Text('Kamera'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Color(0xFFE28A24)),
+                title: const Text('Galeri'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +157,6 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Background Sarang Lebah di Kanan Atas
             Positioned(
               top: -10,
               right: -10,
@@ -92,51 +184,67 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 25),
 
                   // ================= SEKSI UTAMA PROFIL ATAS =================
-                  // Avatar Kamera
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFF0A243).withOpacity(0.4),
-                      border: Border.all(
-                        color: const Color(0xFFE28A24),
-                        width: 3,
-                      ),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/icons/camera.svg",
-                        width: 45,
-                        height: 45,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
+                  GestureDetector(
+                    onTap: _isLoading ? null : _showImagePicker,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFF0A243).withValues(alpha: 0.4),
+                        border: Border.all(
+                          color: const Color(0xFFE28A24),
+                          width: 3,
                         ),
+                        image: _avatarUrl.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(_avatarUrl),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
+                      child: _avatarUrl.isEmpty
+                          ? Center(
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : SvgPicture.asset(
+                                      "assets/icons/camera.svg",
+                                      width: 45,
+                                      height: 45,
+                                      colorFilter: const ColorFilter.mode(
+                                        Colors.white,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Nama User
-                  const Text(
-                    "Salmaa",
-                    style: TextStyle(
+                  Text(
+                    _userName,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF4E1F0F),
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Email User
-                  const Text(
-                    "idn2026@gmail.com",
-                    style: TextStyle(
+                  Text(
+                    _userEmail,
+                    style: const TextStyle(
                       fontSize: 13,
                       color: Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Tombol Edit Profile Orange
                   SizedBox(
                     width: 160,
                     height: 38,
@@ -146,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           context,
                           MaterialPageRoute(
                               builder: (_) => const EditProfilePage()),
-                        );
+                        ).then((_) => _loadUserData());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFE28A24),
@@ -169,7 +277,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 28),
 
-                  // TITLE: Character Level
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -183,7 +290,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 8),
 
-                  // CARD KUNING: Character Level
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -192,7 +298,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     child: Row(
                       children: [
-                        // Avatar Ulat Hijau Bulat
                         Container(
                           width: 80,
                           height: 80,
@@ -215,7 +320,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        // Nama Karakter & Progress Level Bar
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,25 +333,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-
-                              // AREA PROGRESS BAR (Sudah Nempel Sempurna ke Icon 1)
-                              // AREA PROGRESS BAR (Menggunakan Transform untuk Menghilangkan Celah Bawaan SVG)
                               Row(
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // Icon Level 1 Lengkap (dari Asset)
                                   SvgPicture.asset(
                                     "assets/icons/satu.svg",
                                     width: 30,
                                     height: 30,
                                     fit: BoxFit.contain,
                                   ),
-                                  // Bar Cokelat Sengon (Digeser ke kiri secara paksa agar menempel)
                                   Expanded(
                                     child: Transform.translate(
-                                      offset: const Offset(-3,
-                                          0), // <--- Menggeser bar 3 piksel ke kiri menembus whitespace SVG
+                                      offset: const Offset(-3, 0),
                                       child: Container(
                                         height: 14,
                                         margin: EdgeInsets.zero,
@@ -264,7 +362,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   ),
-                                  // Icon Level 2 Lengkap (dari Asset)
                                   SvgPicture.asset(
                                     "assets/icons/dua.svg",
                                     width: 30,
@@ -282,7 +379,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 24),
 
-                  // SEKSI ACCOUNT SETTINGS
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(

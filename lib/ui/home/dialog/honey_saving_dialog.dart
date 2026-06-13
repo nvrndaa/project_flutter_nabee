@@ -1,34 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
+import 'package:flutter_nabee/data/model/request/transaction_request_model.dart';
+import 'package:flutter_nabee/ui/home/bloc/transaction/transaction_bloc.dart';
 
 class HoneySavingDialog extends StatefulWidget {
   final int day;
-  final Function(String) onSave;
+  final int month;
+  final int year;
+  final int honeyJarId;
+  final VoidCallback onSaved;
 
-  const HoneySavingDialog({super.key, required this.day, required this.onSave});
+  const HoneySavingDialog({
+    super.key,
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.honeyJarId,
+    required this.onSaved,
+  });
 
   @override
   State<HoneySavingDialog> createState() => _HoneySavingDialogState();
 }
 
 class _HoneySavingDialogState extends State<HoneySavingDialog> {
-  late final TextEditingController _amountController;
-
-  @override
-  void initState() {
-    super.initState();
-    _amountController = TextEditingController();
-  }
+  final amountController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void dispose() {
-    _amountController.dispose();
+    amountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _save() async {
+    final amount = int.tryParse(amountController.text.trim());
+    if (amount == null || amount < 1000) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Minimal Rp1.000')),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    final request = CreateTransactionRequestModel(
+      honeyJarId: widget.honeyJarId,
+      amount: amount,
+    );
+
+    context.read<TransactionBloc>().add(
+          TransactionEvent.createTransaction(request),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return BlocListener<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          current.maybeWhen(
+            success: (_) => true,
+            error: (_) => true,
+            orElse: () => false,
+          ),
+      listener: (context, state) {
+        state.maybeWhen(
+          success: (_) {
+            widget.onSaved();
+            if (mounted) Navigator.pop(context);
+          },
+          error: (message) {
+            if (mounted) {
+              setState(() => isLoading = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+            }
+          },
+          orElse: () {},
+        );
+      },
+      child: Dialog(
       backgroundColor: Colors.transparent,
       child: SingleChildScrollView(
         child: Container(
@@ -58,7 +111,7 @@ class _HoneySavingDialogState extends State<HoneySavingDialog> {
               ),
               const SizedBox(height: 25),
               TextField(
-                controller: _amountController,
+                controller: amountController,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -89,23 +142,28 @@ class _HoneySavingDialogState extends State<HoneySavingDialog> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  onPressed: () {
-                    widget.onSave(_amountController.text);
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Save Changes",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
+                  onPressed: isLoading ? null : _save,
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text(
+                          "Save Changes",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                 ),
               ),
             ],
           ),
         ),
+      ),
       ),
     );
   }

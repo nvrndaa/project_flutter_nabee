@@ -4,7 +4,6 @@ import 'package:flutter_nabee/ui/home/pages/honey_calendar_page.dart';
 import 'package:flutter_nabee/ui/models/jar_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-// --- WIDGET RAK KAYU ---
 Widget buildShelf() {
   return Stack(
     children: [
@@ -33,11 +32,14 @@ Widget buildShelf() {
   );
 }
 
-// --- WIDGET TOPLES ---
 Widget buildJarWidget(
     BuildContext context, JarModel jar, double availableWidth) {
-  double jarWidth = (availableWidth - 80) / 3;
+  double jarWidth = (availableWidth / 3) * 0.78;
   if (jarWidth > 90) jarWidth = 90;
+  if (jarWidth < 60) jarWidth = 60;
+  final target = int.tryParse(jar.price) ?? 1;
+  final current = int.tryParse(jar.currentAmount) ?? 0;
+  final progress = (current / target).clamp(0.0, 1.0);
 
   return GestureDetector(
     onTap: () {
@@ -52,11 +54,38 @@ Widget buildJarWidget(
         SizedBox(
           height: jarWidth * 1.15,
           width: jarWidth,
-          child: Image.asset(
-            "assets/images/empty_jar.png",
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.liquor, size: 50, color: AppColors.orange),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 3,
+                right: 3,
+                bottom: 3,
+                height: (jarWidth * 1.15 - 8) * progress,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFCC00),
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(6)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        const Color(0xFFFFCC00).withValues(alpha: 0.85),
+                        const Color(0xFFFFAA2C),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: Image.asset(
+                  "assets/images/empty_jar.png",
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.liquor, size: 50, color: AppColors.orange),
+                ),
+              ),
+            ],
           ),
         ),
         Container(
@@ -79,10 +108,10 @@ Widget buildJarWidget(
   );
 }
 
-// --- WIDGET BUTTON PLUS ---
 Widget buildAddButton(double availableWidth, VoidCallback onTap) {
-  double btnSize = (availableWidth - 80) / 3;
+  double btnSize = (availableWidth / 3) * 0.78;
   if (btnSize > 80) btnSize = 80;
+  if (btnSize < 60) btnSize = 60;
 
   return GestureDetector(
     onTap: onTap,

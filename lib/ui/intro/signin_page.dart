@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_nabee/data/datasources/auth_local_datasource.dart';
 import 'package:flutter_nabee/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter_nabee/data/model/request/register_request_model.dart';

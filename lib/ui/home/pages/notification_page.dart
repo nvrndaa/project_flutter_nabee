@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_nabee/ui/home/bloc/notification/notification_bloc.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
+
+  @override
+  State<NotificationPage> createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotificationBloc>().add(FetchNotifications());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +25,6 @@ class NotificationPage extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Honeycomb Background
             Positioned(
               top: 0,
               right: -15,
@@ -23,61 +37,90 @@ class NotificationPage extends StatelessWidget {
               ),
             ),
 
-            // Content (Sudah dibungkus scroll view agar aman dari overflow)
-            SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
+            BlocBuilder<NotificationBloc, NotificationState>(
+              builder: (context, state) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(Icons.arrow_back),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.arrow_back),
+                          ),
+                          const Text(
+                            "Notification",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
+
+                      const SizedBox(height: 20),
+
                       const Text(
-                        "Notification",
+                        "Today",
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
+
+                      const SizedBox(height: 20),
+
+                      if (state is NotificationLoading)
+                        const Padding(
+                          padding: EdgeInsets.all(30),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFFE28A24),
+                            ),
+                          ),
+                        )
+                      else if (state is NotificationSuccess && state.logs.isEmpty)
+                        _notificationItem(
+                          icon: Icons.notifications_none_outlined,
+                          title: "No notifications yet",
+                          subtitle: "Start saving to get reminders",
+                        )
+                      else if (state is NotificationSuccess)
+                        ...state.logs.map(
+                          (log) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _notificationItem(
+                              icon: Icons.notifications_active_outlined,
+                              title: "Reminder #${log.reminderNumber}",
+                              subtitle: "Don't forget to save today!",
+                            ),
+                          ),
+                        )
+                      else
+                        Column(
+                          children: [
+                            _notificationItem(
+                              icon: Icons.notifications_none_outlined,
+                              title: "Set your notification",
+                              subtitle: "Allow notifications on your device",
+                            ),
+                            const SizedBox(height: 16),
+                            _notificationItem(
+                              icon: Icons.check_circle_outline,
+                              title: "Welcome to Nabee!",
+                              subtitle: "Your sign in process is success",
+                            ),
+                          ],
+                        ),
                     ],
                   ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "Today",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _notificationItem(
-                    icon: Icons.notifications_none_outlined,
-                    title: "Set your notification",
-                    subtitle: "Allow notifications on your device",
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  _notificationItem(
-                    icon: Icons.check_circle_outline,
-                    title: "Welcome to Nabee!",
-                    subtitle: "Your sign in process is success",
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),
