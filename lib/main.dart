@@ -8,6 +8,7 @@ import 'package:flutter_nabee/data/datasources/transaction_remote_datasource.dar
 import 'package:flutter_nabee/ui/home/bloc/article/article_bloc.dart';
 import 'package:flutter_nabee/ui/home/bloc/notification/notification_bloc.dart';
 import 'package:flutter_nabee/ui/home/bloc/transaction/transaction_bloc.dart';
+import 'package:flutter_nabee/ui/home/pages/popup_page.dart';
 import 'package:flutter_nabee/ui/intro/bloc/login/login_bloc.dart';
 import 'package:flutter_nabee/ui/intro/bloc/logout/logout_bloc.dart';
 import 'package:flutter_nabee/ui/intro/splash_page.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home: CaterpillarPopupPage(),
       ),
     );
   }
