@@ -75,6 +75,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/nav/
+    - assets/gif/
 
 flutter_launcher_icons:
   android: true

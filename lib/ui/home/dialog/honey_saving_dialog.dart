@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_nabee/core/constants/colors.dart';
 import 'package:flutter_nabee/data/model/request/transaction_request_model.dart';
 import 'package:flutter_nabee/ui/home/bloc/transaction/transaction_bloc.dart';
+import 'package:intl/intl.dart';
 
 class HoneySavingDialog extends StatefulWidget {
   final int day;
@@ -35,7 +37,8 @@ class _HoneySavingDialogState extends State<HoneySavingDialog> {
   }
 
   Future<void> _save() async {
-    final amount = int.tryParse(amountController.text.trim());
+    final raw = amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final amount = int.tryParse(raw);
     if (amount == null || amount < 1000) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Minimal Rp1.000')),
@@ -110,24 +113,34 @@ class _HoneySavingDialogState extends State<HoneySavingDialog> {
                     fontSize: 14, color: AppColors.brownText, height: 1.4),
               ),
               const SizedBox(height: 25),
-              TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  hintText: "Rp.",
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide:
-                        const BorderSide(color: AppColors.orange, width: 1.5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide:
-                        const BorderSide(color: AppColors.orange, width: 2),
-                  ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(color: AppColors.orange, width: 1.5),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                child: Row(
+                  children: [
+                    const Text("Rp",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            color: Colors.black87)),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: TextField(
+                        controller: amountController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [ThousandsFormatter()],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 25),
@@ -165,6 +178,23 @@ class _HoneySavingDialogState extends State<HoneySavingDialog> {
         ),
       ),
       ),
+    );
+  }
+}
+
+class ThousandsFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+    final number = int.parse(digits);
+    final formatted = NumberFormat('#,###', 'id').format(number);
+    return newValue.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

@@ -185,10 +185,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildStatCards() {
-    final moneySaved =
-        _totalSaved >= 1000000
-            ? 'Rp ${(_totalSaved / 1000000).toStringAsFixed(1)} JT'
-            : 'Rp $_totalSaved';
+    final moneySaved = _totalSaved >= 1000000
+        ? 'Rp ${(_totalSaved / 1000000).toStringAsFixed(1)} JT'
+        : 'Rp $_totalSaved';
     return Row(
       children: [
         Expanded(
@@ -223,7 +222,17 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Column(
         children: [
-          Image.asset("assets/images/ulet_happy.png", height: 180),
+          Transform(
+            transform: Matrix4.identity()
+              ..scale(1.8) // Mengatur tingkat perbesaran ulat (Zoom)
+              ..translate(
+                  0.0, 14.5), // Menggeser posisi ulat ke bawah (koordinat Y)
+            alignment: Alignment.center,
+            child: Image.asset(
+              "assets/gif/Caterpillar_Happy.gif",
+              height: 180,
+            ),
+          ),
           const SizedBox(height: 10),
           GestureDetector(
             onTap: _showEditNameDialog,
@@ -333,108 +342,107 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFDE674),
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: SizedBox(
-          height: 105,
-          child: Stack(
-            children: [
-              Positioned(
-                left: 16,
-                bottom: -22,
-                child: Image.asset(
-                  "assets/images/empty_jar.png",
-                  width: 75,
-                  height: 110,
-                  fit: BoxFit.contain,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFDE674),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: SizedBox(
+            height: 105,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 16,
+                  bottom: -22,
+                  child: Image.asset(
+                    "assets/images/empty_jar.png",
+                    width: 75,
+                    height: 110,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-              Positioned(
-                left: 107,
-                right: 16,
-                top: 14,
-                bottom: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            jar.name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF4A2000),
+                Positioned(
+                  left: 107,
+                  right: 16,
+                  top: 14,
+                  bottom: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              jar.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF4A2000),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: Color(0xFF4A2000),
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      jar.endDate,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF6D5333),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: Color(0xFF4A2000),
+                            size: 24,
+                          ),
+                        ],
                       ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 16,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border:
-                                Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: FractionallySizedBox(
-                            widthFactor: progress,
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFCC00),
-                                borderRadius: BorderRadius.circular(20),
+                      Text(
+                        jar.endDate,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF6D5333),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 16,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: FractionallySizedBox(
+                              widthFactor: progress,
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFCC00),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "$percent% saved",
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFF4A2000),
+                          const SizedBox(height: 2),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "$percent% saved",
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFF4A2000),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

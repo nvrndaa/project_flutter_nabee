@@ -40,8 +40,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
   }
 
   void _processTransactions(List<TransactionResponseModel> txns) {
-    final jarTxns =
-        txns.where((t) => t.honeyJarId == (widget.jar.id ?? -1));
+    final jarTxns = txns.where((t) => t.honeyJarId == (widget.jar.id ?? -1));
     final saved = <int>{};
     int total = 0;
     for (final t in jarTxns) {
@@ -64,16 +63,14 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
 
   void _prevMonth() {
     setState(() {
-      _currentMonth =
-          DateTime(_currentMonth.year, _currentMonth.month - 1);
+      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
     });
     _loadTransactions();
   }
 
   void _nextMonth() {
     setState(() {
-      _currentMonth =
-          DateTime(_currentMonth.year, _currentMonth.month + 1);
+      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
     });
     _loadTransactions();
   }
@@ -92,13 +89,111 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
     );
   }
 
+  // =========================================================
+  // FIX: DIALOG KONFIRMASI DELETE JAR (YES / NO) SESUAI MOCKUP
+  // =========================================================
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "Delete Jar",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff1A1A1A),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Are you sure you want to delete this jar?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // BUTTON NO (ORANGE PENUH)
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffE38D1A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      "No",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // BUTTON YES (BORDER OUTLINE ORANGE)
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      // TODO: Tambahkan fungsi delete API/Database kelompokmu di sini
+                      Navigator.pop(context); // Tutup dialog konfirmasi
+                      Navigator.pop(
+                          context); // Balik ke halaman HoneyJarPage utama
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          color: Color(0xffE38D1A), width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    ),
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffE38D1A),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final jar = widget.jar;
     final target = int.tryParse(jar.price) ?? 1;
-    final current = int.tryParse(jar.currentAmount) ?? 0;
-    final progress = (current / target).clamp(0.0, 1.0);
+    final progress = (_moneySaved / target).clamp(0.0, 1.0);
     final percent = (progress * 100).toInt();
     final moneyLeft = target - _moneySaved;
     final monthLabel = DateFormat('MMMM, yyyy').format(_currentMonth);
@@ -162,6 +257,70 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+
+                        // =========================================================
+                        // FIX: BUTTON TITIK 3 (SVG) YANG MEMICU POPUP MENU DELETE
+                        // =========================================================
+                        Builder(builder: (iconContext) {
+                          return IconButton(
+                            // TANDAIN DI SINI: Ganti path asset SVG titik 3 kamu di bawah ini
+                            icon: SvgPicture.asset(
+                              "assets/icons/titiktiga.svg",
+                              width: 24,
+                              height: 24,
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.brownText, BlendMode.srcIn),
+                              // Fallback jika file SVG belum kamu masukkan ke pubspec
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.more_vert,
+                                      color: AppColors.brownText),
+                            ),
+                            onPressed: () {
+                              final RenderBox renderBox =
+                                  iconContext.findRenderObject() as RenderBox;
+                              final position =
+                                  renderBox.localToGlobal(Offset.zero);
+
+                              showMenu<String>(
+                                context: context,
+                                position: RelativeRect.fromLTRB(
+                                  position.dx +
+                                      renderBox.size.width -
+                                      90, // Meletakkan presisi di bawah ikon
+                                  position.dy + renderBox.size.height,
+                                  position.dx + renderBox.size.width,
+                                  position.dy + renderBox.size.height + 50,
+                                ),
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                color: Colors.white,
+                                items: [
+                                  const PopupMenuItem<String>(
+                                    value: 'delete',
+                                    height: 40,
+                                    child: Center(
+                                      child: Text(
+                                        "Delete",
+                                        style: TextStyle(
+                                          color: Color(0xff1A1A1A),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ).then((String? selectedValue) {
+                                if (selectedValue == 'delete') {
+                                  // Picu Dialog Yes/No saat teks "Delete" diklik
+                                  _showDeleteConfirmationDialog();
+                                }
+                              });
+                            },
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -172,13 +331,10 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 10),
-                          
-                          // --- SUSUNAN BARU: PERSEN (ATAS) -> GARIS MERAH -> RP (BAWAH) ---
                           IntrinsicHeight(
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                // Sisi Kiri: Botol Madu
                                 Expanded(
                                   flex: 4,
                                   child: Image.asset(
@@ -188,16 +344,13 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                     alignment: Alignment.bottomLeft,
                                   ),
                                 ),
-                                const SizedBox(width: 8), 
-                                // Sisi Kanan: Susunan Teks & Garis Rata Kanan
+                                const SizedBox(width: 8),
                                 Expanded(
                                   flex: 6,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end, // Rata kanan
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      const Spacer(), // Mendorong isi komponen ke dasar area botol
-                                      
-                                      // 1. Persentase di atas garis (Ukuran dikecilkan dari 26 ke 18)
+                                      const Spacer(),
                                       Text(
                                         "$percent%",
                                         style: const TextStyle(
@@ -207,23 +360,21 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                             height: 1.0),
                                       ),
                                       const SizedBox(height: 6),
-                                      
-                                      // 2. Garis Putus-putus Merah (Di tengah-tengah teks)
                                       Row(
                                         children: List.generate(
                                           16,
                                           (index) => Expanded(
                                             child: Container(
                                               height: 2,
-                                              margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 1.5),
                                               color: AppColors.orange,
                                             ),
                                           ),
                                         ),
                                       ),
                                       const SizedBox(height: 6),
-                                      
-                                      // 3. Rupiah sekarang berada di bawah garis putus-putus
                                       Text(
                                         "Rp ${NumberFormat('#,###', 'id').format(_moneySaved)}",
                                         style: const TextStyle(
@@ -232,14 +383,13 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                             color: AppColors.brownText,
                                             height: 1.0),
                                       ),
-                                      const SizedBox(height: 4), 
+                                      const SizedBox(height: 4),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          
                           const SizedBox(height: 20),
                           Row(
                             children: [
@@ -311,13 +461,15 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                         GestureDetector(
                                           onTap: _prevMonth,
                                           child: Icon(Icons.chevron_left,
-                                              color: Colors.grey[600], size: 24),
+                                              color: Colors.grey[600],
+                                              size: 24),
                                         ),
                                         const SizedBox(width: 12),
                                         GestureDetector(
                                           onTap: _nextMonth,
                                           child: Icon(Icons.chevron_right,
-                                              color: Colors.grey[600], size: 24),
+                                              color: Colors.grey[600],
+                                              size: 24),
                                         ),
                                       ],
                                     ),
@@ -345,10 +497,13 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
                                                   isOffset: isOffset,
                                                   w: hexWidth,
                                                   h: hexHeight,
-                                                  savedDays: _savedDays.toList(),
+                                                  savedDays:
+                                                      _savedDays.toList(),
                                                   onDayTap: (day) {
-                                                    if (!_savedDays.contains(day)) {
-                                                      showHoneySavingDialog(day);
+                                                    if (!_savedDays
+                                                        .contains(day)) {
+                                                      showHoneySavingDialog(
+                                                          day);
                                                     }
                                                   },
                                                 );
@@ -398,7 +553,7 @@ class _HoneyCalendarPageState extends State<HoneyCalendarPage> {
         i++;
       }
       if (row.length < 6) {
-        row.add(-1); // filler cell
+        row.add(-1);
       }
       rows.add(row);
     }

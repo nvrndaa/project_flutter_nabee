@@ -93,7 +93,7 @@ class _HoneyTipsSectionState extends State<HoneyTipsSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Honey tips",
+          "Honey Articles", 
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
